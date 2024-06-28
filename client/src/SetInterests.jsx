@@ -1,27 +1,56 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import { MultiSelect } from "./MultiSelect"
+import { MultiSelect } from "react-multi-select-component"
 
 function SetInterests() {
     const { username } = useParams();
-    
+    console.log(username)
+    const [saveInterests, setSaveInterests] = useState(null)
+    const [selected, setSelected] = useState([])
     const interests = [
-        {id: "1", title: "Sports & Outdoors"},
-        {id: "2", title: "Education"},
-        {id: "3", title: "Collection"},
-        {id: "4", title: "Competition"},
-        {id: "5", title: "Observation"},
-        {id: "6", title: "Other / Not Sure"}
+        {label: "Sports & Outdoors", value: "sports_and_outdoors"},
+        {label: "Education", value: "education"},
+        {label: "Collection", value: "collection"},
+        {label: "Competition", value: "competition"},
+        {label: "Observation", value: "observation"},
+        {label: "Other / Not sure", value: "general"}
     ]
 
-    const toggleOption = ({ id }) => {
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        const categories = selected.map(item => item.value)
+        console.log(selected)
+        console.log(categories)
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/interests`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                interests: categories,
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    setSaveInterests(response)
+                    return response.json()
+                }
+                throw new Error('failed to save interests')
+            })
+            .catch((error) => {
+                console.error("Error:", error)
+            })
     }
 
     return (
         <div>
             <h2>What are you currently interested in?</h2>
-            <MultiSelect interests={interests} selected={[]} toggleOption={toggleOption}/>
+            <pre>{JSON.stringify(selected)}</pre>
+            <form onSubmit={handleSubmit}>
+            <MultiSelect options={interests} value={selected} onChange={setSelected} labelledBy={"Select"} isCreatable={true}/>
+            <button type='submit'>Save Interests</button>
+            </form>
         </div>
     )
 

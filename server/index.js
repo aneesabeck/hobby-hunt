@@ -60,6 +60,7 @@ app.post("/:username/profile-setup", async (req, res) => {
     const { username } = req.params
     const {bio, pronouns, pfp} = req.body
     try {
+        console.log("hello")
         const updatedUser = await prisma.user.update({
             where: { username: username },
             data: {
@@ -68,6 +69,36 @@ app.post("/:username/profile-setup", async (req, res) => {
                 pfp: pfp
             },
         })
+        res.json(updatedUser)
+    } catch (error) {
+        res.status(500)
+    }
+})
+
+app.post("/:username/interests", async (req, res) => {
+    const { username } = req.params
+    const { interests } = req.body
+    try {
+        console.log(username)
+        console.log("hello")
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!user) {
+            console.log("no")
+            res.status(404)
+        }
+        const interestsToAdd = interests.filter(
+            (interest) => !user.interests.includes(interest)
+        )
+        const newInterests = [...user.interests, ...interestsToAdd]
+        const updatedUser = await prisma.user.update({
+            where: { username: username },
+            data: {
+                interests: newInterests
+            },
+        })
+        console.log(res.json(updatedUser))
         res.json(updatedUser)
     } catch (error) {
         res.status(500)

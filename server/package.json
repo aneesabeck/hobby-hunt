@@ -17,6 +17,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "nodemon": "^3.1.4",
+    "react-multi-select-component": "^4.3.4",
     "react-router-dom": "^6.24.0"
   },
   "devDependencies": {
