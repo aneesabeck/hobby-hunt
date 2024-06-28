@@ -4,7 +4,6 @@ import { MultiSelect } from "react-multi-select-component"
 
 function SetInterests() {
     const { username } = useParams();
-    console.log(username)
     const [saveInterests, setSaveInterests] = useState(null)
     const [selected, setSelected] = useState([])
     const interests = [
@@ -20,8 +19,6 @@ function SetInterests() {
     const handleSubmit = (e) => {
         e.preventDefault()
         const categories = selected.map(item => item.value)
-        console.log(selected)
-        console.log(categories)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/interests`, {
             method: 'POST',
             headers: {
@@ -46,11 +43,11 @@ function SetInterests() {
     return (
         <div>
             <h2>What are you currently interested in?</h2>
-            <pre>{JSON.stringify(selected)}</pre>
             <form onSubmit={handleSubmit}>
             <MultiSelect options={interests} value={selected} onChange={setSelected} labelledBy={"Select"} isCreatable={true}/>
             <button type='submit'>Save Interests</button>
             </form>
+            {saveInterests && (<Navigate to={`/${username}/select-hobby`} replace={true}/>)}
         </div>
     )
 
