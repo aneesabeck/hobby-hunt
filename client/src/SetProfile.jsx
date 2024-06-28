@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, Navigate } from 'react-router-dom'
 import './SetProfile.css'
 
 function SetProfile() {
@@ -7,10 +7,12 @@ function SetProfile() {
     const [pronouns, setPronouns] = useState('')
     const [pfp, setPfp] = useState(null)
     const [pfpUrl, setPfpUrl] = useState('')
+    const [saveProf, setSaveProf] = useState(null)
 
     const { username } = useParams();
 
     const handlePfpChange = (e) => {
+        // changes image to url
         const file = e.target.files[0]
         setPfp(file)
         if (!file || !file.type.startsWith('image/')){
@@ -38,6 +40,7 @@ function SetProfile() {
         })
             .then(response => {
                 if (response.ok) {
+                    setSaveProf(response.json())
                     return response.json()
                 }
                 throw new Error('failed to set profile')
@@ -64,8 +67,8 @@ function SetProfile() {
                 </div>
                 <img src={pfpUrl}/>
                 <button type='submit'>Save Profile</button>
-
             </form>
+            {saveProf && (<Navigate to={`/${username}/interests`} replace={true}/>)}
         </div>
     )
 }
