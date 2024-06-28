@@ -171,6 +171,11 @@ input, textarea {
   color: white;
 }
 
+.signup-box:hover ~ .login-box {
+  background-color: white;
+  cursor: pointer;
+}
+/* 
 .signup-box:hover ~ .login-box{
   background-color: white;
   cursor: pointer;
@@ -178,6 +183,6 @@ input, textarea {
 
 .signup-box:hover ~ .login-box h1{
   color: #234F1E;
-}
+} */
 
 

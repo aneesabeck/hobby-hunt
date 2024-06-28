@@ -22,4 +22,5 @@ model User {
   bio String @default("")
   pronouns String @default("")
   pfp String?
+  interests String[]
 }
