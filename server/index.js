@@ -105,6 +105,32 @@ app.post("/:username/interests", async (req, res) => {
     }
 })
 
+app.get("/get-hobbies", async (req, res) => {
+    try {
+        const hobbies = await prisma.hobby.findMany()
+        res.json(hobbies)
+    } catch (error) {
+        res.status(500)
+    }
+})
+
+app.get("/:username/get-interests", async (req, res) => {
+    const { username } = req.params
+    try {
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+            select: { interests: true },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        res.json(user.interests)
+    } catch (error) {
+        console.error('Error fetching interests')
+        res.status(500)
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
   })
