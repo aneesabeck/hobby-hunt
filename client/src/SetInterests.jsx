@@ -9,9 +9,8 @@ function SetInterests() {
     const interests = [
         {label: "Sports & Outdoors", value: "sports_and_outdoors"},
         {label: "Education", value: "education"},
-        {label: "Collection", value: "collection"},
+        {label: "Art", value: "art"},
         {label: "Competition", value: "competition"},
-        {label: "Observation", value: "observation"},
         {label: "Other / Not sure", value: "general"}
     ]
 
