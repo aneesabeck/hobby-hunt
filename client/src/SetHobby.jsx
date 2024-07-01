@@ -4,7 +4,7 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 function SetHobby() {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
-    const [apiHobbies, setAPIHobbies] = useState([])
+    const [selectedHobby, setSelectedHobby] = useState(null)
     const { username } = useParams();
 
     const fetchUserInterests = () => {
@@ -40,60 +40,66 @@ function SetHobby() {
           })
       }
 
+      useEffect(() => {
+        fetchDBHobbies()
+      }, [username])
+  
+      useEffect(() => {
+        fetchUserInterests()
+      }, [username])
+
+
+
+
     const getDBHobbies = () => {
         try {
-            fetchDBHobbies()
             const filteredDBHobbies = dbHobbies.filter(hobby => {
                 return userInterests.includes(hobby.interests)
             })
-            const dbHobbyNames = filteredDBHobbies.map(hobby => hobby.name)
-            return dbHobbyNames
+            // const dbHobbyNames = filteredDBHobbies.map(hobby => hobby.name)
+            return filteredDBHobbies
         } catch (error) {
             console.error('Error fetching hobbies:', error)
             return []
         }
     }
 
-    useEffect(() => {
-        fetchUserInterests()
-    }, [username])
-
-  
-    const fetchAPIHobbies = async () => {   
-        try {
-            // fetchUserInterests()
-            console.log("interests", userInterests)
-            const hobbyApiKey = import.meta.env.VITE_HOBBY_API
-            const newAPIHobbies = []
-            const APIHobbies = userInterests.map(async (interest) =>
-                await fetch(`https://api.api-ninjas.com/v1/hobbies?category=${interest}`, {
-                    method: 'GET',
-                    headers: { 'X-Api-Key': hobbyApiKey }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log("interest", interest)
-                        return response.json()
-                    }
-                })
-                .then(data => {
-                    console.log("data", data)
-                    // setAPIHobbies([...apiHobbies, data])
-                    return data
-                })
-            )
-            return APIHobbies
-        } catch (error) {
-            console.error('error fetching api hobbies', error)
-        }
+    const handleHobbyClick = (e, hobbyId) => {
+      e.preventDefault()
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/update-hobby/${hobbyId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (response.ok) {
+                // setSelectedHobby(response.json())
+                return response.json()
+            }
+            throw new Error('failed to set profile')
+        })
+        .then(data => {
+          setSelectedHobby(data.hobbyId)
+        })
+        .catch((error) => {
+            console.error("Error:", error)
+        })
     }
-    // const check = fetchAPIHobbies()
-    // const apiHobby = check.map(response => response.data)
-    // console.log("hellooo", apiHobby)
-    console.log("test fetch", fetchAPIHobbies())
-    // console.log("check api", apiHobbies)
+    const findHobbies = getDBHobbies()
 
-    
+    return (
+      <div className="hobbies-select">
+        {findHobbies.map((hobby) => (
+          <div onClick={(e, hobbyId) => handleHobbyClick(e, hobby.id)}>
+            {hobby.name}
+          </div>
+        ))}
+      </div>
+    )
+
+   
+ 
 
 }
 
