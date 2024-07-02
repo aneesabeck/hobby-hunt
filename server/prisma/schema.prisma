@@ -32,4 +32,16 @@ model Hobby {
   name String @unique
   users User[]
   interests String
+  labels String[]
+  posts Post[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  imgUrl String
+  caption String
+  hobby Hobby @relation(fields: [hobbyId], references: [id], onDelete: Cascade)
+  hobbyId Int
+  likes Int @default(0)
+  comments String[]
 }
