@@ -165,7 +165,7 @@ app.get("/:hobbyId/posts", async (req, res) => {
             where: { id: parseInt(hobbyId) },
             select: { posts: true },
         })
-        if (!user) {
+        if (!hobby) {
             return res.status(404)
         }
         res.json(hobby.posts)
@@ -174,6 +174,23 @@ app.get("/:hobbyId/posts", async (req, res) => {
         res.status(500)
     }
 })
+
+app.get("/:hobbyId", async (req, res) => {
+    const { hobbyId } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        res.json(hobby)
+    } catch (error) {
+        console.error('Error fetching posts')
+        res.status(500)
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
   })
