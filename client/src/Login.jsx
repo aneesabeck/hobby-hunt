@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import './Login.css'
 
 function Login() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
+    const [currentUser, setCurrentUser] = useState(null)
+    const [hobby, SetHobby] = useState(null)
   
     const handleChangeUser = (e) => {
       setUser(e.target.value);
@@ -30,6 +32,8 @@ function Login() {
           .then(response => {
             if (response.ok) {
               setResult("login success!");
+              fetchUserHobby()
+              // return currentUser
             }
             else {
               setResult("failed to login!");
@@ -39,6 +43,23 @@ function Login() {
             setResult("failed to login!");
           });
       }
+
+    const fetchUserHobby = () => {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${user}/get-hobbyId`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`status: ${response.status}`)
+        }
+        return response.json();
+      })
+      .then(data => {
+        SetHobby(data)
+      })
+      .catch(error => {
+        console.error('error fetching hobbies:', error)
+      })
+    }
+
 
     return (
         <>
@@ -52,6 +73,7 @@ function Login() {
       <div>
         { result && <p>{result}</p>}
       </div>
+      {hobby && (<Navigate to={`/${user}/${hobby}`} replace={true}/>)}
       </>
     )
 

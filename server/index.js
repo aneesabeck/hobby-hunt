@@ -49,7 +49,8 @@ app.post("/login", async (req, res) => {
 
     bcrypt.compare(password, userRecord.hashedPassword, function(err, result) {
         if (result) {
-            res.status(200).json({});
+            res.status(200).json(userRecord);
+            console.log("user", userRecord)
         } else {
             res.status(500).json({"error": err});
         }
@@ -137,6 +138,23 @@ app.post("/:username/update-hobby/:hobbyId", async (req, res) => {
         })
         res.json(updatedUser)        
     } catch (error) {
+        res.status(500)
+    }
+})
+
+app.get("/:username/get-hobbyId", async (req, res) => {
+    const { username } = req.params
+    try {
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+            select: { hobbyId: true },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        res.json(user.hobbyId)
+    } catch (error) {
+        console.error('Error fetching hobbyId')
         res.status(500)
     }
 })

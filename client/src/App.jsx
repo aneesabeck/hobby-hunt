@@ -6,6 +6,7 @@ import SignUp from './SignUp'
 import SetProfile from './SetProfile'
 import SetInterests from './SetInterests'
 import SetHobby from './SetHobby'
+import HobbyCommunity from './HobbyCommunity'
 
 function App() {
   let location = useLocation()
@@ -51,6 +52,7 @@ function App() {
             <Route path="/:username/profile-setup" element={<SetProfile/>}/>
             <Route path="/:username/interests" element={<SetInterests/>}/>
             <Route path="/:username/select-hobby" element={<SetHobby/>}/>
+            <Route path="/:username/:hobby" element={<HobbyCommunity/>}/>
       </Routes>
 
 
