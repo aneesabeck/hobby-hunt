@@ -49,8 +49,7 @@ app.post("/login", async (req, res) => {
 
     bcrypt.compare(password, userRecord.hashedPassword, function(err, result) {
         if (result) {
-            res.status(200).json(userRecord);
-            console.log("user", userRecord)
+            res.status(200).json({});
         } else {
             res.status(500).json({"error": err});
         }
@@ -159,6 +158,22 @@ app.get("/:username/get-hobbyId", async (req, res) => {
     }
 })
 
+app.get("/:hobbyId/posts", async (req, res) => {
+    const { hobbyId } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+            select: { posts: true },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        res.json(hobby.posts)
+    } catch (error) {
+        console.error('Error fetching posts')
+        res.status(500)
+    }
+})
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
   })
