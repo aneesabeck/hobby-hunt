@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './Login.css'
 
 function Login() {
@@ -63,13 +65,26 @@ function Login() {
   
     return (
         <>
+        <div className='login-header'>
+            <Link to="/">
+              <div className='back-header'>
+                <FontAwesomeIcon icon={faArrowLeft} className='back-logo'/>
+              </div>
+            </Link>
+            <h1 className='login-title'>Log in</h1>
+        </div>
       <div className='user-pass'>       
-        <label><input onChange={handleChangeUser} value={user} placeholder='Username' required></input></label>
-        <label><input onChange={handleChangePassword} value={password} placeholder='Password' required></input></label>
+        <label className='username-input'>Username: <input onChange={handleChangeUser} value={user} placeholder='Enter your username' required></input></label>
+        <label className='password-input'>Password: <input onChange={handleChangePassword} value={password} placeholder='Enter your password' required></input></label>
       </div>
-      <Link to="/login">
-      <button onClick={handleLogin} className='login-btn'>Log in</button>
-      </Link>
+      <div className='login-btns'>
+        <Link to="/login">
+          <button onClick={handleLogin} className='login-btn'>Log in</button>
+        </Link>
+        <Link to="/create">
+          <button>Don't have an account? Create now</button>
+        </Link>
+      </div>
       <div>
         { result && <p>{result}</p>}
       </div>

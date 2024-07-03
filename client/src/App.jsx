@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Route, Routes, useLocation, Link } from 'react-router-dom'
 import './App.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWorm } from '@fortawesome/free-solid-svg-icons'
 import Login from './Login'
 import SignUp from './SignUp'
 import SetProfile from './SetProfile'
@@ -13,38 +15,46 @@ function App() {
 
   return (
     <>
-    {location.pathname === '/create' && (
+    {location.pathname === '/' && (
       <>
-      <div className='sign-header-container'>
-        <div className='create-login-box'>
-            <Link to="/login">
-              <h1>Login</h1>
-            </Link>
+      <div className='header'>
+        <div className='header-left'>
+          <FontAwesomeIcon icon={faWorm} className='hobby-logo'/>
+          <h1 className='title'>Hobby Hunt</h1>
         </div>
-        <div className='create-signup-box'>
+        <div className='header-right'>
+            <Link to="/login">
+              <button className='header-button'>Login</button>
+            </Link>
             <Link to="/create">
-              <h1>Create an account</h1>
+              <button className='header-button'>Create an account</button>
             </Link>
         </div>
       </div>
+      <div className='main-content'>
+        <h2 className='center-text'>Hobby hunt information</h2>
+
+      </div>
+  </>
+    )}
+    {/* {location.pathname === '/create' && (
+      <>
+        <div className='header-right'>
+            <Link to="/login">
+              <button className='header-button'>Login</button>
+            </Link>
+        </div>
       </>
     )}
     {location.pathname === '/login' && (
       <>
-      <div className='sign-header-container'>
-        <div className='login-box'>
-            <Link to="/login">
-              <h1>Login</h1>
-            </Link>
-        </div>
-        <div className='signup-box'>
+        <div className='header-right'>
             <Link to="/create">
-              <h1>Create an account</h1>
+              <button className='header-button'>Create an account</button>
             </Link>
         </div>
-      </div>
       </>
-    )}
+    )} */}
   
       <Routes>
             <Route path="/create" element={<SignUp/>}/>
