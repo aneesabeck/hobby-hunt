@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import './HobbyCommunity.css'
 import PostCard from './PostCard'
 import EventCard from './EventCard'
+import ModalPost from './ModalPost'
 
 function HobbyCommunity() {
     const { username, hobby } = useParams()
@@ -11,6 +12,7 @@ function HobbyCommunity() {
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
     const [newPost, setNewPost] = useState({imgUrl:'', caption:'', author: ''})
+    const [isOpen, setIsOpen] = useState(false)
 
     const fetchPosts = async () => {
         console.log("fetch post")
@@ -26,6 +28,7 @@ function HobbyCommunity() {
         })
         .catch(error => {
         console.error('error fetching posts:', error)
+        console.log(error)
         })
     }
 
@@ -106,20 +109,19 @@ function HobbyCommunity() {
         )
     })
 
-    // console.log("allevents: @@@@", allEvents)
+    function closeModal() {
+        setIsOpen(false)
+      }
+    
+      function openModal() {
+        setIsOpen(true)
+      }
 
-
-
-    // const allEvents = events.map(event => {
-    //     return (
-    //         <EventCard title={event.title} address={event.entities.formatted_address} description={event.description}/>
-    //     )
-    // })
 
     return (
         <div className='community-page'>
             <div className='hobby-posts'>
-                <button>Create new Post</button>
+                <button onClick={openModal}>Create new Post</button>
                 {allPosts}
             </div>
             <div className='events'>
@@ -127,6 +129,7 @@ function HobbyCommunity() {
                 <p>hello</p>
                 {/* {eventEnt} */}
             </div>
+            {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobby}/>}
 
         </div>
     )

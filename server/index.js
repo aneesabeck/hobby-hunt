@@ -191,6 +191,41 @@ app.get("/:hobbyId", async (req, res) => {
     }
 })
 
+app.post("/:hobbyId/:username/new-post", async (req, res) => {
+    const { hobbyId, username } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        const { imgUrl, caption} = req.body
+        const newPost = await prisma.post.create({
+            data: {
+                imgUrl,
+                caption,
+                hobbyId: parseInt(hobbyId),
+                username
+            }
+        })
+        res.json(newPost)
+        
+    } catch (error) {
+        console.error('Error fetching posts')
+        console.log(error)
+        res.status(500)
+    }
+    
+    });
+    
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
   })
