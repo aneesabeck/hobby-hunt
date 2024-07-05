@@ -60,7 +60,6 @@ app.post("/:username/profile-setup", async (req, res) => {
     const { username } = req.params
     const {bio, pronouns, pfp} = req.body
     try {
-        console.log("hello")
         const updatedUser = await prisma.user.update({
             where: { username: username },
             data: {
@@ -79,13 +78,10 @@ app.post("/:username/interests", async (req, res) => {
     const { username } = req.params
     const { interests } = req.body
     try {
-        console.log(username)
-        console.log("hello")
         const user = await prisma.user.findUnique({
             where: { username: username },
         })
         if (!user) {
-            console.log("no")
             res.status(404)
         }
         const interestsToAdd = interests.filter(
@@ -98,8 +94,48 @@ app.post("/:username/interests", async (req, res) => {
                 interests: newInterests
             },
         })
-        console.log(res.json(updatedUser))
         res.json(updatedUser)
+    } catch (error) {
+        res.status(500)
+    }
+})
+
+app.get("/get-hobbies", async (req, res) => {
+    try {
+        const hobbies = await prisma.hobby.findMany()
+        res.json(hobbies)
+    } catch (error) {
+        res.status(500)
+    }
+})
+
+app.get("/:username/get-interests", async (req, res) => {
+    const { username } = req.params
+    try {
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+            select: { interests: true },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        res.json(user.interests)
+    } catch (error) {
+        console.error('Error fetching interests')
+        res.status(500)
+    }
+})
+
+app.post("/:username/update-hobby/:hobbyId", async (req, res) => {
+    const { username, hobbyId } = req.params
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { username: username },
+            data: {
+                hobbyId: parseInt(hobbyId)
+            },
+        })
+        res.json(updatedUser)        
     } catch (error) {
         res.status(500)
     }

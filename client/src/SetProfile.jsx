@@ -35,7 +35,7 @@ function SetProfile() {
             body: JSON.stringify({
                 bio: bio,
                 pronouns: pronouns,
-                pfp: pfp
+                pfp: pfpUrl
             })
         })
             .then(response => {
@@ -66,7 +66,7 @@ function SetProfile() {
                     <label><input type='file' accept="image/*" onChange={handlePfpChange}></input></label>
                 </div>
                 <img src={pfpUrl}/>
-                <button type='submit'>Save Profile</button>
+                <button type='submit' onClick={handleSubmit}>Save Profile</button>
             </form>
             {saveProf && (<Navigate to={`/${username}/interests`} replace={true}/>)}
         </div>
