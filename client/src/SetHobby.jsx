@@ -54,16 +54,10 @@ function SetHobby() {
 
 
     const getDBHobbies = () => {
-        try {
-            const filteredDBHobbies = dbHobbies.filter(hobby => {
-                return userInterests.includes(hobby.interests)
-            })
-            // const dbHobbyNames = filteredDBHobbies.map(hobby => hobby.name)
-            return filteredDBHobbies
-        } catch (error) {
-            console.error('Error fetching hobbies:', error)
-            return []
-        }
+      const filteredDBHobbies = dbHobbies.filter(hobby => {
+          return userInterests.includes(hobby.interests)
+      })
+      return filteredDBHobbies
     }
 
     const handleHobbyClick = (e, hobbyId) => {
@@ -76,7 +70,6 @@ function SetHobby() {
     })
         .then(response => {
             if (response.ok) {
-                // setSelectedHobby(response.json())
                 return response.json()
             }
             throw new Error('failed to set profile')
