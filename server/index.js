@@ -101,45 +101,117 @@ app.post("/:username/interests", async (req, res) => {
 })
 
 app.get("/get-hobbies", async (req, res) => {
-    try {
-        const hobbies = await prisma.hobby.findMany()
-        res.json(hobbies)
-    } catch (error) {
-        res.status(500)
-    }
+    const hobbies = await prisma.hobby.findMany()
+    res.json(hobbies)
 })
 
 app.get("/:username/get-interests", async (req, res) => {
     const { username } = req.params
-    try {
-        const user = await prisma.user.findUnique({
-            where: { username: username },
-            select: { interests: true },
-        })
-        if (!user) {
-            return res.status(404)
-        }
-        res.json(user.interests)
-    } catch (error) {
-        console.error('Error fetching interests')
-        res.status(500)
+    const user = await prisma.user.findUnique({
+        where: { username: username },
+        select: { interests: true },
+    })
+    if (!user) {
+        return res.status(404)
     }
+    res.json(user.interests)
 })
 
 app.post("/:username/update-hobby/:hobbyId", async (req, res) => {
     const { username, hobbyId } = req.params
+    const updatedUser = await prisma.user.update({
+        where: { username: username },
+        data: {
+            hobbyId: parseInt(hobbyId)
+        },
+    })
+    res.json(updatedUser)        
+})
+
+app.get("/:username/get-hobbyId", async (req, res) => {
+    const { username } = req.params
     try {
-        const updatedUser = await prisma.user.update({
+        const user = await prisma.user.findUnique({
             where: { username: username },
-            data: {
-                hobbyId: parseInt(hobbyId)
-            },
+            select: { hobbyId: true },
         })
-        res.json(updatedUser)        
+        if (!user) {
+            return res.status(404)
+        }
+        res.json(user.hobbyId)
     } catch (error) {
+        console.error('Error fetching hobbyId')
         res.status(500)
     }
 })
+
+app.get("/:hobbyId/posts", async (req, res) => {
+    const { hobbyId } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+            select: { posts: true },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        res.json(hobby.posts)
+    } catch (error) {
+        console.error('Error fetching posts')
+        res.status(500)
+    }
+})
+
+app.get("/:hobbyId", async (req, res) => {
+    const { hobbyId } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        res.json(hobby)
+    } catch (error) {
+        console.error('Error fetching posts')
+        res.status(500)
+    }
+})
+
+app.post("/:hobbyId/:username/new-post", async (req, res) => {
+    const { hobbyId, username } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!user) {
+            return res.status(404)
+        }
+        const { imgUrl, caption} = req.body
+        const newPost = await prisma.post.create({
+            data: {
+                imgUrl,
+                caption,
+                hobbyId: parseInt(hobbyId),
+                username
+            }
+        })
+        res.json(newPost)
+        
+    } catch (error) {
+        console.error('Error fetching posts')
+        console.log(error)
+        res.status(500)
+    }
+    
+    });
+    
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)

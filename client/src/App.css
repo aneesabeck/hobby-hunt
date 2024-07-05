@@ -1,22 +1,4 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
 
 @keyframes logo-spin {
   from {
@@ -37,9 +19,6 @@
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
-}
 
 /* hello */
 
@@ -48,7 +27,9 @@ html {
 }
 
 body {
-  font-family: 'Titillium Web', sans-serif;
+  font-family: "Alata", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 h1 {
@@ -78,6 +59,136 @@ label.active {
   }
 }
 
+body, html, #root, .App {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid darkgray;
+}
+
+.header-left {
+  display: flex;
+}
+
+.hobby-logo {
+  font-size: 55px;
+  margin-right: 42px;
+  margin-left: 20px
+  /* margin: 10px 30px 0px 10px; */
+}
+
+.title {
+  margin: 0 100px 0 0;
+  font-size: 50px;
+  font-family: "Rubik Mono One", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.header-right {
+  display: flex;
+  align-items: right;
+}
+
+.header-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 60px);
+}
+
+.center-text{
+  font-size: 36px;
+}
+
+/* button stuff */
+.header-button {
+  display: inline-block;
+  transition: all 0.2s ease-in;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  color: #090909;
+  padding: 0.7em 1.7em;
+  cursor: pointer;
+  font-size: 25px;
+  font-family: "Alata", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  border-radius: 0.5em;
+  background: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+.header-button:active {
+  color: #666;
+  box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.header-button:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.25);
+  top: 100%;
+  width: 140%;
+  height: 180%;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.header-button:after {
+  content: "";
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.45);
+  top: 180%;
+  width: 160%;
+  height: 190%;
+  background-color: #009087;
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.header-button:hover {
+  color: #ffffff;
+  border: 1px solid #009087;
+}
+
+.bheader-button:hover:before {
+  top: -35%;
+  background-color: #009087;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+.header-button:hover:after {
+  top: -45%;
+  background-color: #009087;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+/* button stuff
+
+/* button stuff */
 
 
 input, textarea {
@@ -139,41 +250,56 @@ input, textarea {
 
 /* hey */
 
-.login-box {
+.signup-box {
   flex: 1;
   padding: 10px;
   border: 0.2px solid;
   background-color: #234F1E;
   transition: background-color 0.3s ease;
 }
+.signup-box:hover {
+  background-color: red;
+}
 
-.login-box h1 {
+.signup-box h1 {
   color: white;
 }
 
-.signup-box {
+.login-box {
   flex: 1;
   padding: 10px;
   border: 1px solid;
   transition: background-color 0.3s ease;
 }
 
-.signup-box h1 {
+.login-box h1 {
   color: #234F1E;
 }
 
-.signup-box:hover {
+.login-box:hover {
   background-color: #234F1E;
   cursor: pointer;
 }
 
-.signup-box:hover h1{
+.login-box:hover h1{
   color: white;
 }
 
-.signup-box:hover ~ .login-box {
+.login-box:hover ~ .signup-box{
   background-color: white;
   cursor: pointer;
+}
+
+.login-box:hover ~ .signup-box h1{
+  color: white;
+}
+
+.signup-box:hover ~ .login-box h1{
+  color: white;
+}
+
+.signup-box:hover ~ .login-box{
+  background-color: red;
 }
 /* 
 .signup-box:hover ~ .login-box{

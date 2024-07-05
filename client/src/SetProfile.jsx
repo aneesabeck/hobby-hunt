@@ -12,7 +12,6 @@ function SetProfile() {
     const { username } = useParams();
 
     const handlePfpChange = (e) => {
-        // changes image to url
         const file = e.target.files[0]
         setPfp(file)
         if (!file || !file.type.startsWith('image/')){
