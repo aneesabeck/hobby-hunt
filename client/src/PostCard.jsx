@@ -4,10 +4,58 @@ import './PostCard.css'
 
 function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser, fetchPosts}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
+    const [liked, setLiked] = useState(false)
+    console.log("hello")
 
 
     const handleLikes = async (postId) => {
-        console.log(postId)
+        if (liked === false) {
+            setLiked(true)
+            console.log("liked")
+            console.log(liked)
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/like`, 
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP Error status: ${response.status}`)
+                  }
+                  return response.json()
+                })
+                .then(data => {
+                  setCurrentLikes(data.likes)
+                  fetchPosts()
+                })
+                .catch(error => {
+                  console.error('error fetching post:', error)
+                })
+        } else if (liked === true) {
+            setLiked(false)
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/dislike`, 
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP Error status: ${response.status}`)
+                  }
+                  return response.json()
+                })
+                .then(data => {
+                  setCurrentLikes(data.likes)
+                  fetchPosts()
+                })
+                .catch(error => {
+                  console.error('error fetching post:', error)
+                }) 
+        }
     }
 
     const handleDelete = async (postId) => {
@@ -30,7 +78,7 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
               fetchPosts()
             })
             .catch(error => {
-              console.error('error fetching board:', error)
+              console.error('error fetching post:', error)
             })
     }
 
@@ -53,9 +101,5 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
         </div>
     )
 }
-
-// GET https://api.predicthq.com/v1/events?label=performing-arts%2Centertainment&limit=5 HTTP/1.1
-// Accept: text/csv
-// Authorization: Bearer $ACCESS_TOKEN
 
 export default PostCard

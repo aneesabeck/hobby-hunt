@@ -212,22 +212,57 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
     
     });
 
-    app.delete('/:username/delete/:postid', async (req, res) => {
-        const { username, postid } = req.params
-        let posts = await prisma.post.findMany()
-        const initialLength = posts.length
-        const postToDelete = posts.find((post) => post.id === postid)
-        posts = posts.filter(post => post.id !== postid)
-    
-        try {
-            res.json(postToDelete)
-            await prisma.post.delete({
-                where : { id: parseInt(postid) }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    })
+app.delete('/:username/delete/:postid', async (req, res) => {
+    const { username, postid } = req.params
+    let posts = await prisma.post.findMany()
+    const initialLength = posts.length
+    const postToDelete = posts.find((post) => post.id === postid)
+    posts = posts.filter(post => post.id !== postid)
+
+    try {
+        res.json(postToDelete)
+        await prisma.post.delete({
+            where : { id: parseInt(postid) }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post('/posts/:id/like', async (req, res) => {
+    const { id } = req.params
+    try {
+        const updatedPost = await prisma.post.update({
+            where: { id: parseInt(id) },
+            data: {
+                likes: {
+                    increment: 1,
+                },
+            },
+        })
+        res.json(updatedPost)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post('/posts/:id/dislike', async (req, res) => {
+    const { id } = req.params
+    try {
+        const updatedPost = await prisma.post.update({
+            where: { id: parseInt(id) },
+            data: {
+                likes: {
+                    decrement: 1,
+                },
+            },
+        })
+        res.json(updatedPost)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
     
 
 app.listen(PORT, () => {

@@ -24,7 +24,8 @@ function HobbyCommunity({ username }) {
         return response.json();
         })
         .then(data => {
-        setPosts(data)
+        setPosts(data.sort((a, b) => a.id - b.id))
+        console.log("data", data)
         })
         .catch(error => {
         console.error('error fetching posts:', error)

@@ -13,7 +13,7 @@ import HobbyCommunity from './HobbyCommunity'
 function App() {
   let location = useLocation()
   const [username, setUsername] = useState("")
-
+  
   return (
     <>
     {location.pathname === '/' && (
