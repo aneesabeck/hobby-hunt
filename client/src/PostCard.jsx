@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import './PostCard.css'
 
-function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser}) {
+function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser, fetchPosts}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
 
 
@@ -11,13 +11,34 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
     }
 
     const handleDelete = async (postId) => {
+        console.log(currentUser)
         console.log(postId)
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${currentUser}/delete/${postId}`, 
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP Error status: ${response.status}`)
+              }
+              return response.json()
+            })
+            .then(data => {
+              fetchPosts()
+            })
+            .catch(error => {
+              console.error('error fetching board:', error)
+            })
     }
 
     const handleEdit = async (postId) => {
         console.log(postId)
     }
 
+    console.log(postId)
 
     return (
         <div>
@@ -26,7 +47,7 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 <h2>{caption}</h2>
                 <p>{username}</p>
                 <button onClick={()=> handleLikes(postId)}>Likes: {currentLikes}</button>
-                {username === currentUser && (<button onClick={handleDelete}>Delete Post</button>)}
+                {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}
                 {username === currentUser && (<button onClick={handleEdit}>Edit Post</button>)}
             </div>
         </div>

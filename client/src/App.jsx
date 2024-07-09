@@ -12,6 +12,7 @@ import HobbyCommunity from './HobbyCommunity'
 
 function App() {
   let location = useLocation()
+  const [username, setUsername] = useState("")
 
   return (
     <>
@@ -37,32 +38,14 @@ function App() {
       </div>
   </>
     )}
-    {/* {location.pathname === '/create' && (
-      <>
-        <div className='header-right'>
-            <Link to="/login">
-              <button className='header-button'>Login</button>
-            </Link>
-        </div>
-      </>
-    )}
-    {location.pathname === '/login' && (
-      <>
-        <div className='header-right'>
-            <Link to="/create">
-              <button className='header-button'>Create an account</button>
-            </Link>
-        </div>
-      </>
-    )} */}
   
       <Routes>
-            <Route path="/create" element={<SignUp/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/:username/profile-setup" element={<SetProfile/>}/>
-            <Route path="/:username/interests" element={<SetInterests/>}/>
-            <Route path="/:username/select-hobby" element={<SetHobby/>}/>
-            <Route path="/:username/:hobby" element={<HobbyCommunity/>}/>
+            <Route path="/create" element={<SignUp setUsername={setUsername}/>}/>
+            <Route path="/login" element={<Login setUsername={setUsername}/>}/>
+            <Route path="/profile-setup" element={<SetProfile username={username}/>}/>
+            <Route path="interests" element={<SetInterests username={username}/>}/>
+            <Route path="/select-hobby" element={<SetHobby username={username}/>}/>
+            <Route path="/:hobby" element={<HobbyCommunity username={username}/>}/>
       </Routes>
 
 

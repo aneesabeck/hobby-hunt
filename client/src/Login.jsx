@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './Login.css'
 
-function Login() {
+function Login({ setUsername }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
@@ -34,6 +34,7 @@ function Login() {
           .then(response => {
             if (response.ok) {
               setResult("login success!");
+              setUsername(user)
               fetchUserHobby()
               // return currentUser
             }
@@ -88,7 +89,7 @@ function Login() {
       <div>
         { result && <p>{result}</p>}
       </div>
-      {hobby && (<Navigate to={`/${user}/${hobby}`} replace={true}/>)}
+      {hobby && (<Navigate to={`/${hobby}`} replace={true}/>)}
       </>
     )
 

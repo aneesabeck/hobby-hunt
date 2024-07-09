@@ -5,8 +5,8 @@ import PostCard from './PostCard'
 import EventCard from './EventCard'
 import ModalPost from './ModalPost'
 
-function HobbyCommunity() {
-    const { username, hobby } = useParams()
+function HobbyCommunity({ username }) {
+    const { hobby } = useParams()
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
     const currentHobbyRef = useRef(currentHobby)
@@ -91,7 +91,7 @@ function HobbyCommunity() {
 
     const allPosts = posts.map(post => {
         return (
-            <PostCard postId={post.id} imgUrl={post.imgUrl} caption={post.caption} hobbyId={post.hobbyId} username={post.username} likes={post.likes} currentUser={username}/>
+            <PostCard postId={post.id} imgUrl={post.imgUrl} caption={post.caption} hobbyId={post.hobbyId} username={post.username} likes={post.likes} currentUser={username} fetchPosts={fetchPosts}/>
         )
     })
 
@@ -115,6 +115,7 @@ function HobbyCommunity() {
     
       function openModal() {
         setIsOpen(true)
+        console.log("open")
       }
 
 
@@ -127,7 +128,6 @@ function HobbyCommunity() {
             <div className='events'>
                 {allEvents}
                 <p>hello</p>
-                {/* {eventEnt} */}
             </div>
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobby}/>}
 

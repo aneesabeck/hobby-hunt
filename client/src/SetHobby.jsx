@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 
-function SetHobby() {
+function SetHobby({ username }) {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
     const [selectedHobby, setSelectedHobby] = useState(null)
     const [save, setSave] = useState(null)
     const [result, setResult] = useState(null);
-    const { username } = useParams();
 
     const fetchUserInterests = () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-interests`)
@@ -102,7 +101,7 @@ function SetHobby() {
         { result && <p>{result}</p>}
         </div>
         <button onClick={handleSave}>Save Hobby</button>
-        {save &&  (<Navigate to={`/${username}/${selectedHobby}`}/>)}
+        {save &&  (<Navigate to={`/${selectedHobby}`}/>)}
       </div>
     )
 
