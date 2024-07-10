@@ -273,7 +273,6 @@ app.get("/posts/:id/comments", async (req, res) => {
     })
     if (post) {
         res.json(post.comments)
-        console.log(post.comments)
     } else {
         res.json({error: "card not found"})
     }
@@ -281,10 +280,7 @@ app.get("/posts/:id/comments", async (req, res) => {
 
 app.post('/:postid/:username/comments', async (req, res) => {
     const { postid, username } = req.params
-    console.log("postid", postid)
-    console.log("username", username)
     const { comment } = req.body
-    console.log("comment", comment)
     try {
         const newComment = await prisma.comments.create({
             data: {
@@ -297,8 +293,6 @@ app.post('/:postid/:username/comments', async (req, res) => {
             where: { id: parseInt(postid)}
         })
         res.json(updatedPost)
-        console.log("newcomment", newComment)
-        console.log("new psot", updatedPost.comments)
     } catch (error) {
         console.log(error)
     }

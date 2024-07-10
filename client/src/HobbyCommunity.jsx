@@ -10,32 +10,30 @@ function HobbyCommunity({ username }) {
     const { hobby } = useParams()
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
+    const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
     const [newPost, setNewPost] = useState({imgUrl:'', caption:'', author: ''})
     const [isOpen, setIsOpen] = useState(false)
 
     const fetchPosts = async () => {
-        console.log("fetch post")
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/posts`)
         .then(response => {
-        if (!response.ok) {
-            throw new Error(`status: ${response.status}`)
-        }
-        return response.json();
+            if (!response.ok) {
+                throw new Error(`status: ${response.status}`)
+            }
+            return response.json();
         })
         .then(data => {
-        setPosts(data.sort((a, b) => a.id - b.id))
-        console.log("data", data)
+            setPosts(data.sort((a, b) => a.id - b.id))
         })
         .catch(error => {
-        console.error('error fetching posts:', error)
-        console.log(error)
+            console.error('error fetching posts:', error)
+            console.log(error)
         })
     }
 
     const fetchCurrentHobby = async () => {
-        console.log("fetch hobby")
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}`)
         .then(response => {
         if (!response.ok) {
@@ -45,6 +43,7 @@ function HobbyCommunity({ username }) {
         })
         .then(data => {
         setCurrentHobby(data)
+        setHobbyName(data.name)
         currentHobbyRef.current = data
         })
         .catch(error => {
@@ -53,8 +52,6 @@ function HobbyCommunity({ username }) {
     }
 
     const fetchEvents = async () => {
-        console.log(currentHobbyRef.current)
-        console.log(currentHobbyRef.current.api)
         fetch(`${currentHobbyRef.current.api}`, {
             method: 'GET',
             headers: {
@@ -70,7 +67,6 @@ function HobbyCommunity({ username }) {
                 throw new Error('failed to set profile')
             })
             .then(data => {
-            console.log(data.results)
               setEvents(data.results)
             })
             .catch((error) => {
@@ -98,8 +94,6 @@ function HobbyCommunity({ username }) {
     })
 
     const allEvents = events.map(event => {
-        console.log("hello")
-        console.log(event.entities)
         return (
             <EventCard title={event.title} address={event.entities.formatted_address} description={event.description}/>
         )
@@ -117,13 +111,12 @@ function HobbyCommunity({ username }) {
     
       function openModal() {
         setIsOpen(true)
-        console.log("open")
       }
 
 
     return (
         <div className='community-page'>
-            <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} />
+            <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobby}/>
 
             <div className='hobby-posts'>
                 <button onClick={openModal}>Create new Post</button>

@@ -1,0 +1,8 @@
+.event {
+    border: 1px red solid;
+    border-top-left-radius: 20px 50px;
+    border-top-right-radius: 20px 50px;
+    border-bottom-right-radius: 20px 50px;
+    border-bottom-left-radius: 20px 50px;
+    padding: 1.35em 1.1em;
+}
