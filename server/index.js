@@ -263,6 +263,47 @@ app.post('/posts/:id/dislike', async (req, res) => {
     }
 })
 
+app.get("/posts/:id/comments", async (req, res) => {
+    const { id } = req.params
+    const post = await prisma.post.findUnique({
+        where: { id: parseInt(id) },
+        select: {
+            comments: true
+        }
+    })
+    if (post) {
+        res.json(post.comments)
+        console.log(post.comments)
+    } else {
+        res.json({error: "card not found"})
+    }
+})
+
+app.post('/:postid/:username/comments', async (req, res) => {
+    const { postid, username } = req.params
+    console.log("postid", postid)
+    console.log("username", username)
+    const { comment } = req.body
+    console.log("comment", comment)
+    try {
+        const newComment = await prisma.comments.create({
+            data: {
+                postId: parseInt(postid),
+                text: comment,
+                username: username
+            },
+        })
+        const updatedPost = await prisma.post.findUnique({
+            where: { id: parseInt(postid)}
+        })
+        res.json(updatedPost)
+        console.log("newcomment", newComment)
+        console.log("new psot", updatedPost.comments)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
     
 
 app.listen(PORT, () => {

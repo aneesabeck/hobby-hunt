@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import './PostCard.css'
+import ModalComment from './ModalComment'
 
 function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser, fetchPosts}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
     const [liked, setLiked] = useState(false)
-    console.log("hello")
+    const [comOpen, setComOpen] = useState(false)
 
 
     const handleLikes = async (postId) => {
@@ -86,7 +87,14 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
         console.log(postId)
     }
 
-    console.log(postId)
+    function closeComments() {
+        setComOpen(false)
+      }
+    
+      function openComments() {
+        setComOpen(true)
+      }
+
 
     return (
         <div>
@@ -95,9 +103,11 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 <h2>{caption}</h2>
                 <p>{username}</p>
                 <button onClick={()=> handleLikes(postId)}>Likes: {currentLikes}</button>
+                <button onClick={openComments}>Comments </button>
                 {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}
                 {username === currentUser && (<button onClick={handleEdit}>Edit Post</button>)}
             </div>
+            {comOpen && <ModalComment closeComments={closeComments} postId={postId} username={username}/>}
         </div>
     )
 }
