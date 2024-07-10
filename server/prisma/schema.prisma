@@ -49,6 +49,7 @@ model Post {
   comments Comments[]
   user User @relation(fields: [username], references: [username], onDelete: Cascade)
   username String
+  createdAt DateTime @default(now())
 }
 
 model Comments {
