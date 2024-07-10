@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import "./ModalComment.css";
+import CommentCard from './CommentCard'
 
 const ModalComment = ({ closeComments, postId, username }) => {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
     
     useEffect(() => {
-        fetchCardComments()
+        fetchPostComments()
     }, [postId])
 
     const handleChange = (e) => {
@@ -37,7 +38,7 @@ const ModalComment = ({ closeComments, postId, username }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ text: newComment }),
+          body: JSON.stringify({ comment: newComment }),
         })
         .then(response => {
           if (response.ok) {
@@ -87,7 +88,7 @@ const ModalComment = ({ closeComments, postId, username }) => {
                     </form>
         
                     </div>
-                    <button className="closeBtn" onClick={handleCloseModal}>
+                    <button className="closeBtn" onClick={closeComments}>
                         Close
                     </button>
                     

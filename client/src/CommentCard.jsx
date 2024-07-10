@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import './PostCard.css'
-import ModalComment from './ModalComment'
+// import './CommentCard.css'
+// import ModalComment from './ModalComment'
 
-function PostCard({username, text}) {
+function CommentCard({username, text}) {
 
     return (
         <div>
@@ -12,4 +12,4 @@ function PostCard({username, text}) {
     )
 }
 
-export default PostCard
+export default CommentCard

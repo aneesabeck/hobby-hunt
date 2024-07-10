@@ -107,7 +107,7 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}
                 {username === currentUser && (<button onClick={handleEdit}>Edit Post</button>)}
             </div>
-            {comOpen && <ModalComment closeComments={closeComments} postId={postId} username={username}/>}
+            {comOpen && <ModalComment closeComments={closeComments} postId={postId} username={currentUser}/>}
         </div>
     )
 }

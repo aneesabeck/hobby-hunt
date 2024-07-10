@@ -4,6 +4,7 @@ import './HobbyCommunity.css'
 import PostCard from './PostCard'
 import EventCard from './EventCard'
 import ModalPost from './ModalPost'
+import Sidebar from './Sidebar'
 
 function HobbyCommunity({ username }) {
     const { hobby } = useParams()
@@ -122,6 +123,8 @@ function HobbyCommunity({ username }) {
 
     return (
         <div className='community-page'>
+            <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} />
+
             <div className='hobby-posts'>
                 <button onClick={openModal}>Create new Post</button>
                 {allPosts}

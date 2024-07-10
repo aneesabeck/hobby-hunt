@@ -22,8 +22,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "nodemon": "^3.1.4",
+    "react-burger-menu": "^2.7.1",
+    "react-icons": "^5.2.1",
     "react-multi-select-component": "^4.3.4",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.24.1",
+    "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "prisma": "^5.16.0"
