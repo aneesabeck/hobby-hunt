@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
 const { Client } = require('pg')
 const prisma = new PrismaClient()
+const WebSocket = require('ws')
 const pgClient = new Client({
     connectionString: "postgresql://postgres:Vanessa97723$@localhost:5432/hobbydata?schema=public"
 })
@@ -11,8 +12,14 @@ const bcrypt = require('bcrypt');
 const saltRounds = 14;
 const app = express()
 const PORT = 3000
-const WebSocket = require('ws')
-const wss = new WebSocket.Server({ port: 8080 })
+const wss = new WebSocket.Server({ port: 8080 }, () => {
+    console.log("Websocket server is running on ws://localhost:8080")
+})
+
+app.use(express.json());
+app.use(cors());
+
+const clients = {}
 
 // NOTIFICATONS
 
@@ -31,7 +38,7 @@ pgClient.on('notification', async (msg) => {
     if (msg.channel === 'new_user') {
         const { hobbyId, username } = payload;
         const usersToNotify = await prisma.user.findMany({
-            where: { hobbyId },
+            where: { hobbyId, username: {not: username} },
         })
 
         const notifications = usersToNotify.map(user => ({
@@ -51,16 +58,20 @@ pgClient.on('notification', async (msg) => {
             }
         })
     } else if (msg.channel === 'new_post'){
-        const { hobbyId, caption } = payload;
+        console.log("newpost")
+        const { hobbyId, caption, username } = payload;
+        console.log("user", username)
         const usersToNotify = await prisma.user.findMany({
-            where: { hobbyId },
+            where: { hobbyId, username: {not: username}  },
         })
+        console.log(usersToNotify)
 
         const notifications = usersToNotify.map(user => ({
             type: 'new_post',
             message: `New Post: ${caption}`,
             userId: user.id
         }))
+        console.log(notifications)
 
         await prisma.notification.createMany({
             data: notifications,
@@ -75,9 +86,6 @@ pgClient.on('notification', async (msg) => {
     }
 })
 
-
-
-const clients = {}
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
@@ -94,8 +102,7 @@ wss.on('connection', (ws) => {
     console.log('Client connected')
 })
 // NOTIFICATONS
-app.use(express.json());
-app.use(cors());
+
 
 app.get("/", async (req, res) => {
     const users = await prisma.user.findMany()
@@ -289,7 +296,7 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
             return res.status(404)
         }
         const { imgUrl, caption} = req.body
-        const newPost = await prisma.post.create({
+        const Post = await prisma.post.create({
             data: {
                 imgUrl,
                 caption,
@@ -297,7 +304,7 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
                 username
             }
         })
-        res.json(newPost)
+        res.json(Post)
         
     } catch (error) {
         console.error('Error fetching posts')
