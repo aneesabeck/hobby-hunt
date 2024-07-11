@@ -5,16 +5,20 @@ import PostCard from './PostCard'
 import EventCard from './EventCard'
 import ModalPost from './ModalPost'
 import Sidebar from './Sidebar'
+import WebSocketService from './WebSocketService'
 
-function HobbyCommunity({ username }) {
+
+function HobbyCommunity({ username, setHobby, setHobbyId }) {
     const { hobby } = useParams()
     const [posts, setPosts] = useState([])
+    const [userId, setUserId] = useState("")
     const [currentHobby, setCurrentHobby] = useState(null)
     const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
     const [newPost, setNewPost] = useState({imgUrl:'', caption:'', author: ''})
     const [isOpen, setIsOpen] = useState(false)
+    // const testUserId = 46
 
     const fetchPosts = async () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/posts`)
@@ -44,6 +48,8 @@ function HobbyCommunity({ username }) {
         .then(data => {
         setCurrentHobby(data)
         setHobbyName(data.name)
+        setHobbyId(data.id)
+        setHobby(data.name)
         currentHobbyRef.current = data
         })
         .catch(error => {
@@ -95,15 +101,11 @@ function HobbyCommunity({ username }) {
 
     const allEvents = events.map(event => {
         return (
-            <EventCard title={event.title} address={event.entities.formatted_address} description={event.description}/>
+            <EventCard title={event.title} address={event.geo.address.formatted_address} description={event.description}/>
         )
     })
 
-    const eventEnt = events.map(event => {
-        return (
-            <p>{event.entities}</p>
-        )
-    })
+ 
 
     function closeModal() {
         setIsOpen(false)
@@ -124,10 +126,9 @@ function HobbyCommunity({ username }) {
             </div>
             <div className='events'>
                 {allEvents}
-                <p>hello</p>
             </div>
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobby}/>}
-
+            <WebSocketService userId={parseInt(userId)}/>
         </div>
     )
 }

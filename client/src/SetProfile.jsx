@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import './SetProfile.css'
 
-function SetProfile({ username }) {
+function SetProfile({ username, setUserId }) {
     const [bio, setBio] = useState('')
     const [pronouns, setPronouns] = useState('')
     const [pfp, setPfp] = useState(null)
@@ -38,6 +38,8 @@ function SetProfile({ username }) {
             .then(response => {
                 if (response.ok) {
                     setSaveProf(response.json())
+                    result = response.json()
+                    setUserId(result.id)
                     return response.json()
                 }
                 throw new Error('failed to set profile')

@@ -19,10 +19,8 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
       }
 
       const handleSubmit = (e) => {
-        console.log("submit")
         e.preventDefault()
         closeModal()
-        console.log(formData)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/${username}/new-post`, {
           method: 'POST',
           headers: {
@@ -54,7 +52,6 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
 
     const handleImgChange = (e) => {
       const file = e.target.files[0]
-      console.log("hey")
       if (!file || !file.type.startsWith('image/')){
           console.error("Please select an image file")
       }

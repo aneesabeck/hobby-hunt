@@ -1,5 +1,9 @@
 const { PrismaClient } = require('@prisma/client')
+const { Client } = require('pg')
 const prisma = new PrismaClient()
+const pgClient = new Client({
+    connectionString: "postgresql://postgres:Vanessa97723$@localhost:5432/hobbydata?schema=public"
+})
 require('dotenv').config();
 var cors = require('cors')
 const express = require('express')
@@ -7,13 +11,104 @@ const bcrypt = require('bcrypt');
 const saltRounds = 14;
 const app = express()
 const PORT = 3000
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({ port: 8080 })
 
+// NOTIFICATONS
+
+pgClient.connect()
+
+pgClient.query('LISTEN new_user')
+pgClient.query('LISTEN new_post')
+
+pgClient.on('notification', async (msg) => {
+    console.log('received notifictiion:')
+    const payload = JSON.parse(msg.payload)
+    const data = {
+        type: msg.channel,
+        ...payload,
+    }
+    if (msg.channel === 'new_user') {
+        const { hobbyId, username } = payload;
+        const usersToNotify = await prisma.user.findMany({
+            where: { hobbyId },
+        })
+
+        const notifications = usersToNotify.map(user => ({
+            type: 'new_user',
+            message: `New User: ${username}`,
+            userId: user.id
+        }))
+
+        await prisma.notification.createMany({
+            data: notifications,
+        })
+    
+        usersToNotify.forEach(user => {
+            const client = clients[user.id]
+            if (client && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data))
+            }
+        })
+    } else if (msg.channel === 'new_post'){
+        const { hobbyId, caption } = payload;
+        const usersToNotify = await prisma.user.findMany({
+            where: { hobbyId },
+        })
+
+        const notifications = usersToNotify.map(user => ({
+            type: 'new_post',
+            message: `New Post: ${caption}`,
+            userId: user.id
+        }))
+
+        await prisma.notification.createMany({
+            data: notifications,
+        })
+    
+        usersToNotify.forEach(user => {
+            const client = clients[user.id]
+            if (client && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data))
+            }
+        })
+    }
+})
+
+
+
+const clients = {}
+
+wss.on('connection', (ws) => {
+    ws.on('message', (message) => {
+        const { userId } = JSON.parse(message)
+        clients[userId] = ws
+    })
+    ws.on('close', () => {
+        Object.keys(clients).forEach(key => {
+            if (clients[key] === ws) {
+                delete clients[key]
+            }
+        })
+    })
+    console.log('Client connected')
+})
+// NOTIFICATONS
 app.use(express.json());
 app.use(cors());
 
 app.get("/", async (req, res) => {
     const users = await prisma.user.findMany()
     res.json(users)
+})
+
+app.get('/notifications/:userId', async (req,res) => {
+    const { userId } = req.params
+    const notifications = await prisma.notification.findMany({
+        where: { userId: parseInt(userId) },
+        orderBy: { createdAt: 'desc'}
+    })
+    res.json(notifications)
 })
 
 app.post("/create", async (req, res) => {

@@ -9,10 +9,15 @@ import SetProfile from './SetProfile'
 import SetInterests from './SetInterests'
 import SetHobby from './SetHobby'
 import HobbyCommunity from './HobbyCommunity'
+import AlertsPage from './AlertsPage'
 
 function App() {
   let location = useLocation()
   const [username, setUsername] = useState("")
+  const [userId, setUserId] = useState("")
+  const [hobby, setHobby] = useState("")
+  const [hobbyId, setHobbyId] = useState("")
+  // const socketRef = WebSocketService()
   
   return (
     <>
@@ -42,10 +47,11 @@ function App() {
       <Routes>
             <Route path="/create" element={<SignUp setUsername={setUsername}/>}/>
             <Route path="/login" element={<Login setUsername={setUsername}/>}/>
-            <Route path="/profile-setup" element={<SetProfile username={username}/>}/>
+            <Route path="/profile-setup" element={<SetProfile username={username} setUserId={setUserId}/>}/>
             <Route path="interests" element={<SetInterests username={username}/>}/>
             <Route path="/select-hobby" element={<SetHobby username={username}/>}/>
-            <Route path="/:hobby" element={<HobbyCommunity username={username}/>}/>
+            <Route path="/:hobby" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId}/>}/>
+            <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobby} hobbyId={hobbyId}/>}/>
       </Routes>
 
 

@@ -86,7 +86,6 @@ function SetHobby({ username }) {
     const findHobbies = getDBHobbies()
 
     const handleSave = () => {
-      console.log("selectedhobby", selectedHobby)
       if (selectedHobby != null){
         setSave("Success")
       }

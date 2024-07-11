@@ -42,7 +42,7 @@ function Sidebar({ hobbyName, hobbyId }) {
             {community &&  (<Navigate to={`/${hobbyId}`}/>)}
             {details &&  (<Navigate to={`/${hobbyId}`}/>)}
             {profile &&  (<Navigate to={`/${hobbyId}`}/>)}
-            {alerts &&  (<Navigate to={`/${hobbyId}`}/>)}
+            {alerts &&  (<Navigate to={`/alerts`}/>)}
         </>
     );
 };

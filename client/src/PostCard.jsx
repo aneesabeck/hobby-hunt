@@ -12,8 +12,6 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
     const handleLikes = async (postId) => {
         if (liked === false) {
             setLiked(true)
-            console.log("liked")
-            console.log(liked)
             fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/like`, 
                 {
                   method: "POST",
@@ -60,8 +58,6 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
     }
 
     const handleDelete = async (postId) => {
-        console.log(currentUser)
-        console.log(postId)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${currentUser}/delete/${postId}`, 
             {
               method: "DELETE",
