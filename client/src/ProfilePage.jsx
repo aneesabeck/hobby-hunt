@@ -15,6 +15,7 @@ const ProfilePage = ({ user, hobbyName, hobbyId }) => {
         <img src={user.pfp}/>
         <h3>{user.bio}</h3>
         <h3>{hobbyName}</h3>
+        <button>Edit Profile</button>
         </div>
     )
 
