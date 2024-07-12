@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 // import './CommentCard.css'
-// import ModalComment from './ModalComment'
 
 function CommentCard({username, text}) {
 

@@ -11,7 +11,6 @@ function SignUp({ setUsername }) {
     const [last, setLast] = useState("");
     const [result, setResult] = useState(null);
     const [currentUser, setCurrentUser] = useState(null)
-    // const history = useHistory();
   
     const handleChangeUser = (e) => {
       setUser(e.target.value);

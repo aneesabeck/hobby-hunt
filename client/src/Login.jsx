@@ -8,7 +8,6 @@ function Login({ setUsername }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
-    const [currentUser, setCurrentUser] = useState(null)
     const [hobby, SetHobby] = useState(null)
   
     const handleChangeUser = (e) => {
@@ -36,7 +35,6 @@ function Login({ setUsername }) {
               setResult("login success!");
               setUsername(user)
               fetchUserHobby()
-              // return currentUser
             }
             else {
               setResult("failed to login!");
@@ -74,10 +72,12 @@ function Login({ setUsername }) {
             </Link>
             <h1 className='login-title'>Log in</h1>
         </div>
+
       <div className='user-pass'>       
         <label className='username-input'>Username: <input onChange={handleChangeUser} value={user} placeholder='Enter your username' required></input></label>
         <label className='password-input'>Password: <input onChange={handleChangePassword} value={password} placeholder='Enter your password' required></input></label>
       </div>
+      
       <div className='login-btns'>
         <Link to="/login">
           <button onClick={handleLogin} className='login-btn'>Log in</button>

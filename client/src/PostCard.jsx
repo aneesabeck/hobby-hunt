@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
 import './PostCard.css'
 import ModalComment from './ModalComment'
+import ModalEditPost from './ModalEditPost'
 
-function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser, fetchPosts}) {
+function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchPosts}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
     const [liked, setLiked] = useState(false)
     const [comOpen, setComOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
 
 
     const handleLikes = async (postId) => {
@@ -79,9 +80,9 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
             })
     }
 
-    const handleEdit = async (postId) => {
-        console.log(postId)
-    }
+    // const handleEdit = async (postId) => {
+    //     console.log(postId)
+    // }
 
     function closeComments() {
         setComOpen(false)
@@ -89,6 +90,14 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
     
       function openComments() {
         setComOpen(true)
+      }
+
+      function closeEdits() {
+        setEditOpen(false)
+      }
+    
+      function openEdits() {
+        setEditOpen(true)
       }
 
 
@@ -101,9 +110,10 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 <button onClick={()=> handleLikes(postId)}>Likes: {currentLikes}</button>
                 <button onClick={openComments}>Comments </button>
                 {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}
-                {username === currentUser && (<button onClick={handleEdit}>Edit Post</button>)}
+                {username === currentUser && (<button onClick={openEdits}>Edit Post</button>)}
             </div>
             {comOpen && <ModalComment closeComments={closeComments} postId={postId} username={currentUser}/>}
+            {editOpen && <ModalEditPost closeEdits={closeEdits} postId={postId} username={currentUser} fetchPosts={fetchPosts}/>}
         </div>
     )
 }

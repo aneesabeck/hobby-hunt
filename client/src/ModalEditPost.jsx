@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import "./ModalPost.css";
+import "./ModalEditPost.css";
 
-const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
+const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
     const [formData, setFormData] = useState({
         imgUrl: '',
         caption: '',
-        author: '',
       })
     const [imgUrl, setImgUrl] = useState("")
 
@@ -20,9 +19,9 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
 
       const handleSubmit = (e) => {
         e.preventDefault()
-        closeModal()
-        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/${username}/new-post`, {
-          method: 'POST',
+        closeEdits()
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${postId}/edit-post`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -36,7 +35,7 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
             return response.json();
           }
     
-          throw new Error('Failed to add post.')
+          throw new Error('Failed to edit post.')
         })
         .then(data => {
           fetchPosts()
@@ -47,7 +46,7 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
       }
 
       function handleCloseModal() {
-        closeModal()
+        closeEdits()
     }
 
     const handleImgChange = (e) => {
@@ -61,6 +60,16 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
       }
       reader.readAsDataURL(file)
   }
+//   const handleSelectImage = (e) => {
+//     e.preventDefault()
+//     setEditSelect("Success")
+//   }
+
+//   const handleSelectCaption = (e) => {
+//     e.preventDefault()
+//     setEditSelect("Success")
+//   }
+
 
 
     return (
@@ -68,9 +77,12 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
       <div className="centered">
                 <div className="modal">
                     <div className='modal-content'>
+                        {/* <h3>What would you like to change?</h3>
+                        {editSelect == null &&  (<button onClick={handleSelectImage}>Image</button> )}
+                        {editSelect == null &&  (<button>Caption</button> )} */}
                     <form className="board-form" onSubmit={handleSubmit}>
                         <label>
-                            Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange} required/>
+                            Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange}/>
                         </label>
                         <label>Image: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
 
@@ -95,4 +107,4 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
 
 
 
-export default ModalPost;
+export default ModalEditPost;

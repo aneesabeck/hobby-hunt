@@ -19,7 +19,6 @@ function App() {
   const [userId, setUserId] = useState("")
   const [hobby, setHobby] = useState("")
   const [hobbyId, setHobbyId] = useState("")
-  // const socketRef = WebSocketService()
   
   return (
     <>

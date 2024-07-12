@@ -10,8 +10,6 @@ function Sidebar({ hobbyName, hobbyId }) {
     const [profile, setProfile] = useState(null)
     const [alerts, setAlerts] = useState(null)
 
-    const showSidebar = () => setSidebar(!sidebar);
-
     const handleCommunity = () => {
         setCommunity("Success")
       }

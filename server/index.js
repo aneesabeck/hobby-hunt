@@ -319,6 +319,32 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
     
     });
 
+app.put("/:postId/edit-post", async (req, res) => {
+    const { postId } = req.params
+    const { imgUrl, caption } = req.body
+    try {
+        const currentPost = await prisma.post.findUnique({
+            where: { id: parseInt(postId) },
+        })
+        if (!currentPost) {
+            return res.status(404)
+        }
+        const updatedPost = await prisma.post.update({
+            where: { id: parseInt(postId) },
+            data: {
+                caption: caption !== undefined && caption !== '' ? caption : currentPost.caption,
+                imgUrl: imgUrl !== undefined && imgUrl !== '' ? imgUrl : currentPost.imgUrl,
+            }
+        })
+        
+    } catch (error) {
+        console.error('Error editing post')
+        console.log(error)
+        res.status(500)
+    }
+    
+    });
+
 app.delete('/:username/delete/:postid', async (req, res) => {
     const { username, postid } = req.params
     let posts = await prisma.post.findMany()

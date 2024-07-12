@@ -15,9 +15,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
-    const [newPost, setNewPost] = useState({imgUrl:'', caption:'', author: ''})
     const [isOpen, setIsOpen] = useState(false)
-    // const testUserId = 46
 
     const fetchPosts = async () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/posts`)
@@ -49,7 +47,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             setCurrentHobby(data)
             setHobbyName(data.name)
             setHobbyId(data.id)
-            console.log("data id", data.id)
             setHobby(data.name)
             currentHobbyRef.current = data
         })
@@ -91,7 +88,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         })
         .then(data => {
             setUser(data)
-            console.log("dataaa", data.id)
             setUserId(data.id)
         })
         .catch(error => {
@@ -116,7 +112,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
 
     const allPosts = posts.map(post => {
         return (
-            <PostCard postId={post.id} imgUrl={post.imgUrl} caption={post.caption} hobbyId={post.hobbyId} username={post.username} likes={post.likes} currentUser={username} fetchPosts={fetchPosts}/>
+            <PostCard postId={post.id} imgUrl={post.imgUrl} caption={post.caption} username={post.username} likes={post.likes} currentUser={username} fetchPosts={fetchPosts}/>
         )
     })
 

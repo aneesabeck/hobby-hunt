@@ -3,7 +3,6 @@ import Sidebar from './Sidebar'
 
 const ProfilePage = ({ user, hobbyName, hobbyId }) => {
     const intHobbyId = parseInt(hobbyId)
-    console.log(user)
 
 
     return (

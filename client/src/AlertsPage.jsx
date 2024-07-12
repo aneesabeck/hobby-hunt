@@ -6,7 +6,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
     const [notifications, setNotifications] = useState([])
     const [empty, setEmpty] = useState(null)
     const intHobbyId = parseInt(hobbyId)
-    console.log("user id", userId)
 
 
     const fetchNotifications = async () => {
@@ -36,10 +35,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
         console.log("fetch notif")
     }, [userId])
 
-    useEffect(() => {
-        fetchNotifications()
-        console.log("fetch notif")
-    }, [empty])
 
     const handleClear = async (userId) => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/clear-notifications/${userId}`, 
