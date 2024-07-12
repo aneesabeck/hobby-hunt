@@ -8,10 +8,9 @@ import Sidebar from './Sidebar'
 import WebSocketService from './WebSocketService'
 
 
-function HobbyCommunity({ username, setHobby, setHobbyId }) {
+function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId }) {
     const { hobby } = useParams()
     const [posts, setPosts] = useState([])
-    const [userId, setUserId] = useState("")
     const [currentHobby, setCurrentHobby] = useState(null)
     const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
@@ -38,22 +37,24 @@ function HobbyCommunity({ username, setHobby, setHobbyId }) {
     }
 
     const fetchCurrentHobby = async () => {
-        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}`)
+        console.log("hobby", hobby)
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/get-hobby`)
         .then(response => {
-        if (!response.ok) {
-            throw new Error(`status: ${response.status}`)
-        }
-        return response.json();
+            if (!response.ok) {
+                throw new Error(`status: ${response.status}`)
+            }
+            return response.json();
         })
         .then(data => {
-        setCurrentHobby(data)
-        setHobbyName(data.name)
-        setHobbyId(data.id)
-        setHobby(data.name)
-        currentHobbyRef.current = data
+            setCurrentHobby(data)
+            setHobbyName(data.name)
+            setHobbyId(data.id)
+            console.log("data id", data.id)
+            setHobby(data.name)
+            currentHobbyRef.current = data
         })
         .catch(error => {
-        console.error('error fetching hobby:', error)
+            console.error('error fetching hobby:', error)
         })
     }
 
@@ -80,6 +81,25 @@ function HobbyCommunity({ username, setHobby, setHobbyId }) {
             })
     }
 
+    const fetchCurrentUser = async () => {
+        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`status: ${response.status}`)
+            }
+            return response.json();
+        })
+        .then(data => {
+            setUser(data)
+            console.log("dataaa", data.id)
+            setUserId(data.id)
+        })
+        .catch(error => {
+            console.error('error fetching user:', error)
+        })
+    
+    }
+
     useEffect(() => {
         fetchCurrentHobby()
     }, [hobby])
@@ -89,6 +109,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId }) {
             currentHobbyRef.current = currentHobby
             fetchPosts()
             fetchEvents()
+            fetchCurrentUser()
         }
     }, [currentHobby])
 
@@ -117,9 +138,11 @@ function HobbyCommunity({ username, setHobby, setHobbyId }) {
 
 
     return (
+        <>
+        {!username &&  (<Link to="/login"><button className='header-button'>Login</button> </Link> )}
+        {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
         <div className='community-page'>
-            <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobby}/>
-
+        <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobby}/>
             <div className='hobby-posts'>
                 <button onClick={openModal}>Create new Post</button>
                 {allPosts}
@@ -130,6 +153,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId }) {
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobby}/>}
             <WebSocketService userId={parseInt(userId)}/>
         </div>
+        </>
     )
 }
 

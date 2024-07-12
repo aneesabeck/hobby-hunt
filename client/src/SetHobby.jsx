@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import "./SetHobby.css";
 
-function SetHobby({ username }) {
+function SetHobby({ username, setUser }) {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
     const [selectedHobby, setSelectedHobby] = useState(null)
@@ -78,6 +78,7 @@ function SetHobby({ username }) {
         })
         .then(data => {
           setSelectedHobby(hobbyId)
+          setUser(data)
         })
         .catch((error) => {
             console.error("Error:", error)

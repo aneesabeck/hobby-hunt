@@ -63,7 +63,7 @@ model Comments {
 }
 
 model Notification {
-  if Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   type String
   message String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -10,9 +10,11 @@ import SetInterests from './SetInterests'
 import SetHobby from './SetHobby'
 import HobbyCommunity from './HobbyCommunity'
 import AlertsPage from './AlertsPage'
+import ProfilePage from './ProfilePage'
 
 function App() {
   let location = useLocation()
+  const [user, setUser] = useState(null)
   const [username, setUsername] = useState("")
   const [userId, setUserId] = useState("")
   const [hobby, setHobby] = useState("")
@@ -49,9 +51,10 @@ function App() {
             <Route path="/login" element={<Login setUsername={setUsername}/>}/>
             <Route path="/profile-setup" element={<SetProfile username={username} setUserId={setUserId}/>}/>
             <Route path="interests" element={<SetInterests username={username}/>}/>
-            <Route path="/select-hobby" element={<SetHobby username={username}/>}/>
-            <Route path="/:hobby" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId}/>}/>
+            <Route path="/select-hobby" element={<SetHobby username={username} />}/>
+            <Route path="/:hobby" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId}/>}/>
             <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobby} hobbyId={hobbyId}/>}/>
+            <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobby} hobbyId={hobbyId}/>}/>
       </Routes>
 
 

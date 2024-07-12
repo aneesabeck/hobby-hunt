@@ -58,20 +58,16 @@ pgClient.on('notification', async (msg) => {
             }
         })
     } else if (msg.channel === 'new_post'){
-        console.log("newpost")
         const { hobbyId, caption, username } = payload;
-        console.log("user", username)
         const usersToNotify = await prisma.user.findMany({
             where: { hobbyId, username: {not: username}  },
         })
-        console.log(usersToNotify)
 
         const notifications = usersToNotify.map(user => ({
             type: 'new_post',
             message: `New Post: ${caption}`,
             userId: user.id
         }))
-        console.log(notifications)
 
         await prisma.notification.createMany({
             data: notifications,
@@ -85,7 +81,6 @@ pgClient.on('notification', async (msg) => {
         })
     }
 })
-
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
@@ -101,6 +96,7 @@ wss.on('connection', (ws) => {
     })
     console.log('Client connected')
 })
+
 // NOTIFICATONS
 
 
@@ -207,6 +203,15 @@ app.get("/get-hobbies", async (req, res) => {
     res.json(hobbies)
 })
 
+app.get("/:username/get-user", async (req, res) => {
+    const { username } = req.params
+    const currentUser = await prisma.user.findUnique({
+        where: {username: username}
+    })
+
+    res.json(currentUser)
+})
+
 app.get("/:username/get-interests", async (req, res) => {
     const { username } = req.params
     const user = await prisma.user.findUnique({
@@ -264,7 +269,7 @@ app.get("/:hobbyId/posts", async (req, res) => {
     }
 })
 
-app.get("/:hobbyId", async (req, res) => {
+app.get("/:hobbyId/get-hobby", async (req, res) => {
     const { hobbyId } = req.params
     try {
         const hobby = await prisma.hobby.findUnique({
@@ -275,7 +280,7 @@ app.get("/:hobbyId", async (req, res) => {
         }
         res.json(hobby)
     } catch (error) {
-        console.error('Error fetching posts')
+        console.error('Error fetching hobby')
         res.status(500)
     }
 })
@@ -307,7 +312,7 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
         res.json(Post)
         
     } catch (error) {
-        console.error('Error fetching posts')
+        console.error('Error creating post')
         console.log(error)
         res.status(500)
     }
@@ -325,6 +330,31 @@ app.delete('/:username/delete/:postid', async (req, res) => {
         res.json(postToDelete)
         await prisma.post.delete({
             where : { id: parseInt(postid) }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.delete('/clear-notifications/:userId', async (req, res) => {
+    const { userId } = req.params
+    let notifications = await prisma.notification.deleteMany({
+        where: { userId: parseInt(userId) }
+    })
+    res.json(notifications)
+})
+
+app.delete('/delete/:notifid', async (req, res) => {
+    const { notifid } = req.params
+    let notifs = await prisma.notification.findMany()
+    const initialLength = notifs.length
+    const notifToDelete = notifs.find((notif) => notif.id === notifid)
+    notifs = notifs.filter(notif => notif.id !== notifid)
+
+    try {
+        res.json(notifToDelete)
+        await prisma.notification.delete({
+            where : { id: parseInt(notifid) }
         })
     } catch (error) {
         console.log(error)

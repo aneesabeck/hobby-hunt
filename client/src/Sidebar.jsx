@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import { IconContext } from "react-icons/lib";
-import * as FaIcons from "react-icons/fa"
-import * as AiIcons from "react-icons/ai";
 import './Sidebar.css'
 import { slide as Menu } from 'react-burger-menu'
 
@@ -41,7 +38,7 @@ function Sidebar({ hobbyName, hobbyId }) {
             </Menu>
             {community &&  (<Navigate to={`/${hobbyId}`}/>)}
             {details &&  (<Navigate to={`/${hobbyId}`}/>)}
-            {profile &&  (<Navigate to={`/${hobbyId}`}/>)}
+            {profile &&  (<Navigate to={`/profilepage`}/>)}
             {alerts &&  (<Navigate to={`/alerts`}/>)}
         </>
     );
