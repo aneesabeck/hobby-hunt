@@ -3,8 +3,9 @@ import { Link, Navigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './Login.css'
+import Cookies from 'js-cookie'
 
-function Login({ setUsername }) {
+function Login({ setUsername, setUserArray, setHobbyId }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
@@ -33,12 +34,21 @@ function Login({ setUsername }) {
           .then(response => {
             if (response.ok) {
               setResult("login success!");
+              console.log("login success")
               setUsername(user)
               fetchUserHobby()
+              return response.json()
             }
             else {
               setResult("failed to login!");
             }
+          })
+          .then(data => {
+            console.log("login data", data)
+            setHobbyId(data.hobbyId)
+            setUserArray(data)
+            Cookies.set('username', data.username, { expires: 7 })
+            console.log("data username", data.username)
           })
           .catch(error => {
             setResult("failed to login!");

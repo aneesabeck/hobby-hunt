@@ -36,13 +36,19 @@ function SetProfile({ username, setUserId }) {
             })
         })
             .then(response => {
-                if (response.ok) {
-                    setSaveProf(response.json())
-                    result = response.json()
-                    setUserId(result.id)
-                    return response.json()
-                }
-                throw new Error('failed to set profile')
+                // if (response.ok) {
+                //     // setSaveProf(response.json())
+                //     // // return response.json()cal
+                // }
+                // throw new Error('failed to set profile')
+                console.log(response)
+                // console.log(response.json())
+                return response.json()
+            })
+            .then(data => {
+                console.log(data)
+                setSaveProf("okay")
+                setUserId(data)
             })
             .catch((error) => {
                 console.error("Error:", error)

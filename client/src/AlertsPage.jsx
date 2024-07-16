@@ -9,7 +9,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
 
 
     const fetchNotifications = async () => {
-        console.log(userId)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}`)
         .then(response => {
             if (!response.ok) {
@@ -32,7 +31,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
 
     useEffect(() => {
         fetchNotifications()
-        console.log("fetch notif")
     }, [userId])
 
 
@@ -60,7 +58,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
     }
 
     const handleDelete = async (notifId) => {
-        console.log(notifId)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/delete/${notifId}`, 
             {
               method: "DELETE",

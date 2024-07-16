@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import "./SetHobby.css";
 
-function SetHobby({ username, setUser }) {
+function SetHobby({ username, setUser, setHobbyId }) {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
     const [selectedHobby, setSelectedHobby] = useState(null)
@@ -62,6 +62,7 @@ function SetHobby({ username, setUser }) {
     }
 
     const handleHobbyClick = (e, hobbyId) => {
+      console.log(hobbyId)
       e.preventDefault()
       setActiveBtnId(hobbyId)
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/update-hobby/${hobbyId}`, {
@@ -71,13 +72,18 @@ function SetHobby({ username, setUser }) {
         },
     })
         .then(response => {
-            if (response.ok) {
-                return response.json()
-            }
-            throw new Error('failed to set profile')
+            // if (response.ok) {
+            console.log(response)
+            // console.log(response.json())
+            return response.json()
+      
+            // }
+            // throw new Error('failed to set profile')
         })
         .then(data => {
+          console.log(data)
           setSelectedHobby(hobbyId)
+          setHobbyId(hobbyId)
           setUser(data)
         })
         .catch((error) => {

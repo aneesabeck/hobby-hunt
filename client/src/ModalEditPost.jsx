@@ -60,15 +60,6 @@ const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
       }
       reader.readAsDataURL(file)
   }
-//   const handleSelectImage = (e) => {
-//     e.preventDefault()
-//     setEditSelect("Success")
-//   }
-
-//   const handleSelectCaption = (e) => {
-//     e.preventDefault()
-//     setEditSelect("Success")
-//   }
 
 
 
@@ -77,9 +68,6 @@ const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
       <div className="centered">
                 <div className="modal">
                     <div className='modal-content'>
-                        {/* <h3>What would you like to change?</h3>
-                        {editSelect == null &&  (<button onClick={handleSelectImage}>Image</button> )}
-                        {editSelect == null &&  (<button>Caption</button> )} */}
                     <form className="board-form" onSubmit={handleSubmit}>
                         <label>
                             Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange}/>

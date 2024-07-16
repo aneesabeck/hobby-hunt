@@ -147,7 +147,8 @@ app.post("/login", async (req, res) => {
 
     bcrypt.compare(password, userRecord.hashedPassword, function(err, result) {
         if (result) {
-            res.status(200).json({});
+            res.status(200);
+            return res.json(userRecord)
         } else {
             res.status(500).json({"error": err});
         }
@@ -166,8 +167,9 @@ app.post("/:username/profile-setup", async (req, res) => {
                 pfp: pfp
             },
         })
-        res.json(updatedUser)
+        return res.json(updatedUser.id)
     } catch (error) {
+        console.log(error)
         res.status(500)
     }
 })
@@ -232,7 +234,7 @@ app.post("/:username/update-hobby/:hobbyId", async (req, res) => {
             hobbyId: parseInt(hobbyId)
         },
     })
-    res.json(updatedUser)        
+    return res.json(updatedUser)        
 })
 
 app.get("/:username/get-hobbyId", async (req, res) => {
@@ -336,12 +338,146 @@ app.put("/:postId/edit-post", async (req, res) => {
                 imgUrl: imgUrl !== undefined && imgUrl !== '' ? imgUrl : currentPost.imgUrl,
             }
         })
+        res.json(updatedPost)
         
     } catch (error) {
         console.error('Error editing post')
         console.log(error)
         res.status(500)
     }
+    
+    });
+
+app.put("/:username/edit-profile", async (req, res) => {
+    const { username } = req.params
+    const { firstname, lastname, pronouns, bio, pfp } = req.body
+    try {
+        const currentUser = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!currentUser) {
+            return res.status(404)
+        }
+        const updatedUser = await prisma.user.update({
+            where: { username: username },
+            data: {
+                firstname: firstname !== undefined && firstname !== '' ? firstname : currentUser.firstname,
+                lastname: lastname !== undefined && lastname !== '' ? lastname : currentUser.lastname,
+                pronouns: pronouns !== undefined && pronouns !== '' ? pronouns : currentUser.pronouns,
+                bio: bio !== undefined && bio !== '' ? bio : currentUser.bio,
+                pfp: pfp !== undefined && pfp !== '' ? pfp : currentUser.pfp,
+            }
+        })
+        res.json(updatedUser)
+    } catch (error) {
+        console.error('Error editing profile')
+        console.log(error)
+        res.status(500)
+    }
+    
+    });
+
+app.put("/:currentUser/edit-user", async (req, res) => {
+    const { currentUser } = req.params
+    const { newUser } = req.body
+    try {
+        const thisUser = await prisma.user.findUnique({
+            where: { username: currentUser },
+        })
+        if (!thisUser) {
+            return res.status(404)
+        }
+        const changeUser = await prisma.user.findUnique({
+            where: { username: newUser },
+        })
+        if (!changeUser) {
+            const updatedUser = await prisma.user.update({
+                where: { username: currentUser },
+                data: {
+                    username: newUser,
+                }
+            })
+            return res.json(updatedUser)
+        }
+        
+    } catch (error) {
+        console.error('Error editing username')
+        console.log(error)
+        res.status(500)
+    }
+    
+    });
+
+app.put("/:username/change-password", async (req, res) => {
+    const { username } = req.params
+    const { currentPassword, newPassword } = req.body
+    const userRecord = await prisma.user.findUnique({
+        where : { username: username }
+    });
+    if (!userRecord) {
+        return res.status(404)
+    }
+    bcrypt.compare(currentPassword, userRecord.hashedPassword, function(err, result) {
+        if (result) {
+            bcrypt.hash(newPassword, saltRounds, async function(err, hashed) {
+                if (err) {
+                    console.error("error hashing")
+                    return res.status(500)
+                }
+                try {
+                    const updatedUser = await prisma.user.update({
+                        where : { username: username },
+                        data : { 
+                            hashedPassword: hashed,
+                        }
+                    });
+                    res.status(200).json(updatedUser);
+                } catch (e) {
+                    res.status(500).json({"error": e.message});
+                }
+            });
+        } else {
+            res.status(500).json({"error": err});
+        }
+    });
+    
+    });
+
+app.put("/:username/change-bg", async (req, res) => {
+    const { username } = req.params
+    const { color } = req.body
+    const thisUser = await prisma.user.findUnique({
+        where: { username: username },
+    })
+    if (!thisUser) {
+        return res.status(404)
+    }
+    const updatedUser = await prisma.user.update({
+        where: { username: username },
+        data: {
+            backgroundColor: color,
+        }
+    })
+    return res.json(updatedUser)
+    
+    });
+
+app.put("/:username/change-hobby", async (req, res) => {
+    const { username } = req.params
+    const { hobbyId } = req.body
+    const thisUser = await prisma.user.findUnique({
+        where: { username: username },
+    })
+    if (!thisUser) {
+        return res.status(404)
+    }
+    const updatedUser = await prisma.user.update({
+        where: { username: username },
+        data: {
+            hobbyId: parseInt(hobbyId),
+        }
+    })
+    return res.json(updatedUser)
     
     });
 
@@ -353,11 +489,12 @@ app.delete('/:username/delete/:postid', async (req, res) => {
     posts = posts.filter(post => post.id !== postid)
 
     try {
-        res.json(postToDelete)
         await prisma.post.delete({
             where : { id: parseInt(postid) }
         })
+        res.json(postToDelete)
     } catch (error) {
+        res.status(404)
         console.log(error)
     }
 })
@@ -453,6 +590,24 @@ app.post('/:postid/:username/comments', async (req, res) => {
         res.json(updatedPost)
     } catch (error) {
         console.log(error)
+    }
+})
+
+app.get("/:hobbyId/posts/search", async (req, res) => {
+    const { hobbyId } = req.params
+    const { caption } = req.query
+    let whereClause = {
+        hobbyId: parseInt(hobbyId),
+    }
+    if (caption) whereClause.caption = { contains: caption }
+    try {
+        const posts = await prisma.post.findMany({
+            where: whereClause,
+        })
+        res.json(posts)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('server error')
     }
 })
 

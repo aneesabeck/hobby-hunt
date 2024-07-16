@@ -28,6 +28,7 @@ model User {
   posts Post[]
   comments Comments[]
   notifications Notification[]
+  backgroundColor String?
 }
 
 model Hobby {
