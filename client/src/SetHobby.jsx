@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import "./SetHobby.css";
+import Cookies from 'js-cookie'
 
 function SetHobby({ username, setUser, setHobbyId }) {
     const [dbHobbies, setDBHobbies] = useState([])
@@ -62,7 +63,6 @@ function SetHobby({ username, setUser, setHobbyId }) {
     }
 
     const handleHobbyClick = (e, hobbyId) => {
-      console.log(hobbyId)
       e.preventDefault()
       setActiveBtnId(hobbyId)
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/update-hobby/${hobbyId}`, {
@@ -73,7 +73,6 @@ function SetHobby({ username, setUser, setHobbyId }) {
     })
         .then(response => {
             // if (response.ok) {
-            console.log(response)
             // console.log(response.json())
             return response.json()
       
@@ -81,7 +80,7 @@ function SetHobby({ username, setUser, setHobbyId }) {
             // throw new Error('failed to set profile')
         })
         .then(data => {
-          console.log(data)
+          Cookies.set('username', data.username, { expires: 7 })
           setSelectedHobby(hobbyId)
           setHobbyId(hobbyId)
           setUser(data)

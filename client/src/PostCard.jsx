@@ -4,7 +4,7 @@ import ModalComment from './ModalComment'
 import ModalEditPost from './ModalEditPost'
 import ModalViewProf from './ModalViewProf'
 
-function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchPosts, handleDelete}) {
+function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username, likes, currentUser, fetchPosts, handleDelete}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
     const [liked, setLiked] = useState(false)
     const [comOpen, setComOpen] = useState(false)
@@ -14,9 +14,9 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
 
 
     const handleLikes = async (postId) => {
-        if (liked === false) {
+        if ((liked === false) && (!likedPosts.includes(postId))) {
             setLiked(true)
-            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/like`, 
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${currentUser}/${postId}/like`, 
                 {
                   method: "POST",
                   headers: {
@@ -31,14 +31,15 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
                 })
                 .then(data => {
                   setCurrentLikes(data.likes)
+                  setLikedPosts(data.likedPosts)
                   fetchPosts()
                 })
                 .catch(error => {
                   console.error('error fetching post:', error)
                 })
-        } else if (liked === true) {
+        } else if ((liked === true) || (likedPosts.includes(postId))) {
             setLiked(false)
-            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/dislike`, 
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${currentUser}/${postId}/dislike`, 
                 {
                   method: "POST",
                   headers: {
@@ -53,6 +54,7 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
                 })
                 .then(data => {
                   setCurrentLikes(data.likes)
+                  setLikedPosts(data.likedPosts)
                   fetchPosts()
                 })
                 .catch(error => {
@@ -61,27 +63,8 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
         }
     }
 
-    // const handleDelete = async (postId) => {
-    //     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${currentUser}/delete/${postId}`, 
-    //         {
-    //           method: "DELETE",
-    //           headers: {
-    //             "Content-Type": "application/json",
-    //           },
-    //         })
-    //         .then(response => {
-    //           if (!response.ok) {
-    //             throw new Error(`HTTP Error status: ${response.status}`)
-    //           }
-    //           return response.json()
-    //         })
-    //         .then(data => {
-    //           fetchPosts()
-    //         })
-    //         .catch(error => {
-    //           console.error('error fetching post:', error)
-    //         })
-    // }
+   
+
 
     const fetchClickedUser = async () => {
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
@@ -122,7 +105,6 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
     }
 
     function handleClickUser() {
-      console.log(username)
       setProfOpen(true)
     }
 
@@ -140,7 +122,7 @@ function PostCard({postId, imgUrl, caption, username, likes, currentUser, fetchP
             <div className='post'>
                 <img src={imgUrl}/>
                 <h2>{caption}</h2>
-                <p onClick={handleClickUser}>{username}</p>
+                <p onClick={handleClickUser} className='post-author'>{username}</p>
                 <button onClick={()=> handleLikes(postId)}>Likes: {currentLikes}</button>
                 <button onClick={openComments}>Comments </button>
                 {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}

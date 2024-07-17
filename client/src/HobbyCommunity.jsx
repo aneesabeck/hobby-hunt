@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import './HobbyCommunity.css'
 import PostCard from './PostCard'
@@ -11,6 +11,7 @@ import Cookies from 'js-cookie'
 
 
 function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby }) {
+    const { hobbyParam } = useParams()
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
     const [hobbyName, setHobbyName] = useState("")
@@ -19,7 +20,8 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     const [isOpen, setIsOpen] = useState(false)
     const [changeHobby, setChangeHobby] = useState(null)
     const [sort, setSort] = useState('asc')
-    console.log("hb", hobbyId)
+    const [likedPosts, setLikedPosts] = useState([])
+    const cookies = Cookies.get('username')
 
 
     const fetchPosts = async () => {
@@ -44,13 +46,14 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             console.log(error)
         })
     }
+    console.log("hobby", hobbyId)
 
     const fetchCurrentHobby = async () => {
+        if (!hobbyId) {
+            return
+        }
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/get-hobby`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`status: ${response.status}`)
-            }
             return response.json();
         })
         .then(data => {
@@ -66,7 +69,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     }
 
     const fetchEvents = async () => {
-        fetch(`${currentHobbyRef.current.api}`, {
+        fetch(`${currentHobbyRef.current.api}&saved_location.location_id=WrVOU8VnzjdXuc23w8LNhw`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`,
@@ -74,10 +77,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             },
         })
             .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-                throw new Error('failed to fetch events')
+                return response.json()
             })
             .then(data => {
               setEvents(data.results)
@@ -98,6 +98,8 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         .then(data => {
             setUser(data)
             setUserId(data.id)
+            console.log("set liked posts")
+            setLikedPosts(data.likedPosts)
         })
         .catch(error => {
             console.error('error fetching user:', error)
@@ -105,13 +107,34 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     
     }
 
+    const changeToHobby = useCallback((details) => {
+        
+
+    })
+
     useEffect(() => {
         fetchCurrentHobby()
     }, [hobbyId])
 
     useEffect(() => {
+        fetchCurrentUser()
+    }, [posts])
+
+    useEffect(() => {
         fetchCurrentHobby()
     }, [username])
+
+    useEffect(() => {
+        fetchCurrentHobby()
+    }, [cookies])
+
+    useEffect(() => {
+        fetchCurrentHobby()
+    }, [cookies])
+
+    // useEffect(() => {
+    //     fetchCurrentHobby()
+    // }, [username])
     
 
     useEffect(() => {
@@ -122,6 +145,15 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             fetchCurrentUser()
         }
     }, [currentHobby])
+
+    useEffect(() => {
+        if (currentHobby !== null) {
+            currentHobbyRef.current = currentHobby
+            fetchPosts()
+            fetchEvents()
+            fetchCurrentUser()
+        }
+    }, [cookies])
 
     useEffect(() => {
         if (currentHobby !== null) {
@@ -158,7 +190,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
 
     const allPosts = posts.map(post => {
         return (
-            <PostCard postId={post.id} imgUrl={post.imgUrl} caption={post.caption} username={post.username} likes={post.likes} currentUser={username} fetchPosts={fetchPosts} handleDelete={handleDelete}/>
+            <PostCard likedPosts={likedPosts} setLikedPosts={setLikedPosts} postId={post.id} imgUrl={post.imgUrl} caption={post.caption} username={post.username} likes={post.likes} currentUser={username} fetchPosts={fetchPosts} handleDelete={handleDelete}/>
         )
     })
 
@@ -197,39 +229,32 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         setChangeHobby("Success")
     }, [hobbyId])
 
-  
+
+function changeTheHobby(e) {
+    var hobbyId = e.target.value;
+    handleNewHobby(hobbyId);
+}
+
+
+   console.log(handleNewHobby)
+
+
+   // get the list of drop-down options from the server
 
 
     return (
         <>
-        {changeHobby && (<Navigate to={`/${hobbyId}`} replace={true}/>)}
+        {/* {handleNewHobby && (<Navigate to={`/hobby-community/${hobbyId}`} replace={true}/>)} */}
         {!username &&  (<Link to="/login"><button className='header-button'>Login</button> </Link> )}
         {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
-        <label>Select a new hobby:
-          <select value={hobbyId} onChange={handleNewHobby}>
-          <option value='1' ><Link to="/1">Performing Arts</Link></option>
-          <option value='2'><Link to="/2">Gardening</Link></option>
-          <option value='3'><Link to="/3">Soccer</Link></option>
-          <option value='4'><Link to="/4">Tourism</Link></option>
-          <option value='5' ><Link to="/5">Animation</Link></option>
-          <option value='6' ><Link to="/6">Pottery</Link></option>
-         <option value='7' > <Link to="/7">Crochet</Link></option>
-          <option value='8'><Link to="/8">Running</Link></option>
-          <option value='9'><Link to="/9">Video Games</Link></option>
-         <option value='10'> <Link to="/10">Jewelry Collection</Link></option>
-          <option value='11'><Link to="/11">Music</Link></option>
-          <option value='12'><Link to="/12">Baking</Link></option>
-          <option value='13'><Link to="/13">Biking</Link></option>
-          </select>
-          </label>
         <div className='community-page'>
         <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobbyId}/>
             <div className='hobby-posts'>
             <label>Sort Posts:
                 <select value={sort} onChange={handleSortPosts}>
-                    <option value='asc'>Most to Least Recent</option>
-                    <option value='desc'>Least to Most Recent</option>
-                    <option value='alpha' >Alphabetically by Caption</option>
+                    <option value='asc' key='asc'>Most to Least Recent</option>
+                    <option value='desc' key='desc'>Least to Most Recent</option>
+                    <option value='alpha' key='alpha'>Alphabetically by Caption</option>
                 </select>
           </label>
           <SearchBar fetchPosts={fetchPosts} setPosts={setPosts} hobbyId={hobbyId}/>

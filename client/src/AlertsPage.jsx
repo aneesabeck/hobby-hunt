@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar'
 import WebSocketService from './WebSocketService'
+import Cookies from 'js-cookie'
 
 const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
+    console.log("userId", userId)
+    console.log("hobbyName", hobbyName)
+    console.log("hobbyId", hobbyId)
     const [notifications, setNotifications] = useState([])
-    const [empty, setEmpty] = useState(null)
     const intHobbyId = parseInt(hobbyId)
 
 
     const fetchNotifications = async () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`status: ${response.status}`)
-            }
             return response.json();
         })
         .then(data => {
             setNotifications(data)
-            if (data.length !== 0) {
-                setEmpty("Success")
-            }
         })
         .catch(error => {
             setNotifications([])
-            setEmpty(null)
             console.error('error fetching notifs:', error)
         })
     }
@@ -32,6 +28,11 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
     useEffect(() => {
         fetchNotifications()
     }, [userId])
+
+    useEffect(() => {
+      if (notifications == []) {
+      }
+  }, [notifications])
 
 
     const handleClear = async (userId) => {
@@ -49,7 +50,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
               return response.json()
             })
             .then(data => {
-                setEmpty(null)
                 fetchNotifications()
             })
             .catch(error => {
@@ -66,18 +66,17 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
               },
             })
             .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP Error status: ${response.status}`)
-              }
-              return response.json()
+              console.log("res", response)
             })
             .then(data => {
-                fetchNotifications()
+                console.log("data", data)
+                setNotifications(notifications.filter((notif) => notif.id !== notifId))
             })
             .catch(error => {
               console.error('error deleting notif:', error)
             })
     }
+    console.log(notifications)
     
 
     return (
@@ -91,8 +90,8 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
                     <button onClick={() => handleDelete(notification.id)}>Delete</button>
                 </div>
             ))}
-            {empty != null && (<button onClick={() => handleClear(userId)}>Clear notifications</button>)}
-            {empty == null && (<h3>No recent notifications</h3>)}
+            {(notifications.length !== 0) && (<button onClick={() => handleClear(userId)}>Clear notifications</button>)}
+            {(notifications.length === 0) && (<h3>No recent notifications</h3>)}
 
         </div>
         <WebSocketService userId={parseInt(userId)}/>

@@ -34,7 +34,6 @@ function Login({ setUsername, setUserArray, setHobbyId }) {
           .then(response => {
             if (response.ok) {
               setResult("login success!");
-              console.log("login success")
               setUsername(user)
               fetchUserHobby()
               return response.json()
@@ -44,11 +43,9 @@ function Login({ setUsername, setUserArray, setHobbyId }) {
             }
           })
           .then(data => {
-            console.log("login data", data)
             setHobbyId(data.hobbyId)
             setUserArray(data)
             Cookies.set('username', data.username, { expires: 7 })
-            console.log("data username", data.username)
           })
           .catch(error => {
             setResult("failed to login!");
@@ -99,7 +96,7 @@ function Login({ setUsername, setUserArray, setHobbyId }) {
       <div>
         { result && <p>{result}</p>}
       </div>
-      {hobby && (<Navigate to={`/${hobby}`} replace={true}/>)}
+      {hobby && (<Navigate to={`/hobby-community/${hobby}`} replace={true}/>)}
       </>
     )
 

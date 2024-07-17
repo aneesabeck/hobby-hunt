@@ -283,6 +283,24 @@ app.get("/:hobbyId/get-hobby", async (req, res) => {
         res.json(hobby)
     } catch (error) {
         console.error('Error fetching hobby')
+        console.log(error)
+        res.status(500)
+    }
+})
+
+app.get("/hobby-community/:hobbyId", async (req, res) => {
+    const { hobbyId } = req.params
+    try {
+        const hobby = await prisma.hobby.findUnique({
+            where: { id: parseInt(hobbyId) },
+        })
+        if (!hobby) {
+            return res.status(404)
+        }
+        res.json(hobby)
+    } catch (error) {
+        console.error('Error fetching hobby')
+        console.log(error)
         res.status(500)
     }
 })
@@ -477,7 +495,12 @@ app.put("/:username/change-hobby", async (req, res) => {
             hobbyId: parseInt(hobbyId),
         }
     })
-    return res.json(updatedUser)
+
+    const currentHobby = await prisma.hobby.findUnique({
+        where: { id: parseInt(hobbyId) },
+    })
+    const output = {hobbyName: currentHobby.name, ...updatedUser}
+    return res.json(output)
     
     });
 
@@ -513,19 +536,14 @@ app.delete('/delete/:notifid', async (req, res) => {
     const initialLength = notifs.length
     const notifToDelete = notifs.find((notif) => notif.id === notifid)
     notifs = notifs.filter(notif => notif.id !== notifid)
-
-    try {
-        res.json(notifToDelete)
-        await prisma.notification.delete({
-            where : { id: parseInt(notifid) }
-        })
-    } catch (error) {
-        console.log(error)
-    }
+    await prisma.notification.delete({
+        where : { id: parseInt(notifid) }
+    })
+    res.json(notifToDelete)
 })
 
-app.post('/posts/:id/like', async (req, res) => {
-    const { id } = req.params
+app.post('/posts/:username/:id/like', async (req, res) => {
+    const { username, id } = req.params
     try {
         const updatedPost = await prisma.post.update({
             where: { id: parseInt(id) },
@@ -535,14 +553,28 @@ app.post('/posts/:id/like', async (req, res) => {
                 },
             },
         })
-        res.json(updatedPost)
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!user) {
+            res.status(404)
+        }
+        const likedPosts = [parseInt(id), ...user.likedPosts]
+        const updatedUser = await prisma.user.update({
+            where: { username: username },
+            data: {
+                likedPosts: likedPosts
+            },
+        })
+        res.json({likedPosts: updatedUser.likedPosts, ...updatedPost})
     } catch (error) {
         console.log(error)
     }
 })
 
-app.post('/posts/:id/dislike', async (req, res) => {
-    const { id } = req.params
+app.post('/posts/:username/:id/dislike', async (req, res) => {
+    console.log("dislike")
+    const { username, id } = req.params
     try {
         const updatedPost = await prisma.post.update({
             where: { id: parseInt(id) },
@@ -552,7 +584,21 @@ app.post('/posts/:id/dislike', async (req, res) => {
                 },
             },
         })
-        res.json(updatedPost)
+        const user = await prisma.user.findUnique({
+            where: { username: username },
+        })
+        if (!user) {
+            res.status(404)
+        }
+        const currentLikedPosts = user.likedPosts
+        newLikedPosts = currentLikedPosts.filter((postid) => postid !== parseInt(id))
+        const updatedUser = await prisma.user.update({
+            where: { username: username },
+            data: {
+                likedPosts: newLikedPosts
+            },
+        })
+        res.json({likedPosts: updatedUser.likedPosts, ...updatedPost})
     } catch (error) {
         console.log(error)
     }

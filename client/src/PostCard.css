@@ -1,3 +1,7 @@
 .post {
     border: 2px solid red;
 }
+
+.post-author {
+    cursor: pointer;
+}

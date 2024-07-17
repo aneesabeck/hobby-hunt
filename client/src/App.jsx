@@ -19,51 +19,71 @@ function App() {
   const [username, setUsername] = useState(Cookies.get('username'))
   const [userId, setUserId] = useState("")
   const [hobby, setHobby] = useState("")
-  const [hobbyId, setHobbyId] = useState("")
-  console.log("cookies", Cookies.get('username'))
+  const [hobbyId, setHobbyId] = useState(null)
+  const cookies = Cookies.get('username')
 
-  const handleNewHobby = (e) => {
-    setHobbyId(e.target.value)
-    const newhobbyId = e.target.value
+  useEffect(() => {
+    console.log("APP JSXXXX")
+    if (cookies == null) {
+      setUser(null)
+      setHobby("")
+      setUsername("")
+    }
+}, [cookies])
+
+
+  const handleNewHobby = (newHobbyId) => {
+    // const newhobbyId = e.target.value
+    // remove this put, because changing dropdown shouldn't affect the state
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/change-hobby`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        hobbyId: newhobbyId,
+        hobbyId: newHobbyId,
       }),
     })
     .then(response => {
+      console.log("res", response)
       return response.json()
 
     })
     .then(data => {
+      console.log("data", data)
       setHobbyId(data.hobbyId)
       setUser(data)
+      setHobby(data.hobbyName)
     })
     .catch((error) => {
       console.error('Error:', error)
     })
   }
 
-  useEffect(() => {
-    const fetchCurrentHobby = async () => {
-      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/get-hobby`)
-      .then(response => {
-      })
-      .then(data => {
-          setHobby(data.name)
-      })
-      .catch(error => {
-          console.error('error fetching hobby:', error)
-      })
-  }
-}, [hobbyId])
-console.log("hobbyId", hobbyId)
+  const fetchCurrentHobby = async () => {
+    console.log()
+    if (hobbyId == null) {
+      console.log("hobbyId is null")
+      return
+    }
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/get-hobby`)
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+        setHobby(data.name)
+    })
+    .catch(error => {
+        console.error('error fetching hobby:', error)
+    })
+}
+
+
+useEffect(() => {
+  fetchCurrentHobby()
+}, [userId])
 
 const fetchCurrentUser = async () => {
-  console.log("hello")
   fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
   .then(response => {
       if (!response.ok) {
@@ -72,8 +92,10 @@ const fetchCurrentUser = async () => {
       return response.json();
   })
   .then(data => {
+      console.log("user data", data)
       setHobbyId(data.hobbyId)
       setUser(data)
+      setUserId(data.id)
   })
   .catch(error => {
       console.error('error fetching user:', error)
@@ -81,9 +103,14 @@ const fetchCurrentUser = async () => {
 
 }
 
+
 useEffect(() => {
+  console.log("use effect")
   fetchCurrentUser()
-}, [username])
+}, [])
+
+
+
 
   
   return (
@@ -98,6 +125,7 @@ useEffect(() => {
         <div className='header-right'>
         {!username &&  (<Link to="/login"><button className='header-button'>Login</button> </Link> )}
         {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
+        {username &&  (<Link to={`/hobby-community/${hobbyId}`}><button className='header-button'>Hobby Community</button></Link> )}
         </div>
       </div>
       <div className='main-content'>
@@ -113,9 +141,9 @@ useEffect(() => {
             <Route path="/profile-setup" element={<SetProfile username={username} setUserId={setUserId}/>}/>
             <Route path="interests" element={<SetInterests username={username}/>}/>
             <Route path="/select-hobby" element={<SetHobby username={username} setUser={setUser} setHobbyId={setHobbyId}/>}/>
-            <Route path="/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} handleNewHobby={handleNewHobby}/>}/>
+            <Route path="/hobby-community/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} handleNewHobby={handleNewHobby}/>}/>
             <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobby} hobbyId={hobbyId}/>}/>
-            <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobby} hobbyId={hobbyId} setUsername={setUsername}/>}/>
+            <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobby} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
       </Routes>
 
 

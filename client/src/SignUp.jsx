@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './SignUp.css'
+import Cookies from 'js-cookie'
 
 function SignUp({ setUsername }) {
     const [user, setUser] = useState("");
@@ -11,6 +12,7 @@ function SignUp({ setUsername }) {
     const [last, setLast] = useState("");
     const [result, setResult] = useState(null);
     const [currentUser, setCurrentUser] = useState(null)
+    
   
     const handleChangeUser = (e) => {
       setUser(e.target.value);

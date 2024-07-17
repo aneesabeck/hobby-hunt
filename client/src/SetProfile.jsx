@@ -41,12 +41,10 @@ function SetProfile({ username, setUserId }) {
                 //     // // return response.json()cal
                 // }
                 // throw new Error('failed to set profile')
-                console.log(response)
                 // console.log(response.json())
                 return response.json()
             })
             .then(data => {
-                console.log(data)
                 setSaveProf("okay")
                 setUserId(data)
             })
