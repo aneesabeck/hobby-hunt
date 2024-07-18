@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { MultiSelect } from "react-multi-select-component"
 
-function SetInterests() {
-    const { username } = useParams();
+function SetInterests({ username }) {
     const [saveInterests, setSaveInterests] = useState(null)
     const [selected, setSelected] = useState([])
     const interests = [
@@ -46,7 +45,7 @@ function SetInterests() {
             <MultiSelect options={interests} value={selected} onChange={setSelected} labelledBy={"Select"} isCreatable={true}/>
             <button type='submit'>Save Interests</button>
             </form>
-            {saveInterests && (<Navigate to={`/${username}/select-hobby`} replace={true}/>)}
+            {saveInterests && (<Navigate to={`/select-hobby`} replace={true}/>)}
         </div>
     )
 

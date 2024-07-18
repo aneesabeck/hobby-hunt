@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import './SetProfile.css'
 
-function SetProfile() {
+function SetProfile({ username }) {
     const [bio, setBio] = useState('')
     const [pronouns, setPronouns] = useState('')
     const [pfp, setPfp] = useState(null)
     const [pfpUrl, setPfpUrl] = useState('')
     const [saveProf, setSaveProf] = useState(null)
-
-    const { username } = useParams();
 
     const handlePfpChange = (e) => {
         const file = e.target.files[0]
@@ -58,7 +56,6 @@ function SetProfile() {
                     <label><input onChange={(e)=> setBio(e.target.value)} value={bio} placeholder='Short Bio'></input></label>
                 </div>
                 <div>
-                    {/* might change to dropdown to have options */}
                     <label><input onChange={(e)=> setPronouns(e.target.value)} value={pronouns} placeholder='Pronouns'></input></label>
                 </div>
                 <div>
@@ -67,7 +64,7 @@ function SetProfile() {
                 <img src={pfpUrl}/>
                 <button type='submit' onClick={handleSubmit}>Save Profile</button>
             </form>
-            {saveProf && (<Navigate to={`/${username}/interests`} replace={true}/>)}
+            {saveProf && (<Navigate to={`/interests`} replace={true}/>)}
         </div>
     )
 }

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './SignUp.css'
 
-function SignUp() {
+function SignUp({ setUsername }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [first, setFirst] = useState("");
@@ -46,6 +46,7 @@ function SignUp() {
         .then(response => {
           if (response.ok) {
             setResult("Success");
+            setUsername(user)
             setCurrentUser(response.json())
           }
           else {
@@ -86,7 +87,7 @@ function SignUp() {
       <div>
         { result && <p>{result}</p>}
       </div>
-      {currentUser && (<Navigate to={`/${user}/profile-setup`} replace={true}/>)}
+      {currentUser && (<Navigate to={`/profile-setup`} replace={true}/>)}
       </>
     )
 

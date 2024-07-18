@@ -7,6 +7,7 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
         caption: '',
         author: '',
       })
+    const [imgUrl, setImgUrl] = useState("")
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -18,15 +19,17 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
       }
 
       const handleSubmit = (e) => {
+        console.log("submit")
         e.preventDefault()
         closeModal()
+        console.log(formData)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/${username}/new-post`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            imgUrl: formData.imgUrl,
+            imgUrl: imgUrl,
             caption: formData.caption
           }),
         })
@@ -49,6 +52,19 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
         closeModal()
     }
 
+    const handleImgChange = (e) => {
+      const file = e.target.files[0]
+      console.log("hey")
+      if (!file || !file.type.startsWith('image/')){
+          console.error("Please select an image file")
+      }
+      const reader = new FileReader()
+      reader.onload = () => {
+          setImgUrl(reader.result)
+      }
+      reader.readAsDataURL(file)
+  }
+
 
     return (
         <>
@@ -59,9 +75,7 @@ const ModalBoard = ({ closeModal, fetchPosts, username, hobby }) => {
                         <label>
                             Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange} required/>
                         </label>
-                        <label>
-                            imgUrl: <input type="text" name="imgUrl" value={formData.imgUrl} onChange={handleChange} required/>
-                        </label>
+                        <label>Image: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
 
                         <div className="form-buttons">
                             <button type="submit">Submit</button>

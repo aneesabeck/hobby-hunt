@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
+import "./SetHobby.css";
 
-function SetHobby() {
+function SetHobby({ username }) {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
     const [selectedHobby, setSelectedHobby] = useState(null)
     const [save, setSave] = useState(null)
     const [result, setResult] = useState(null);
-    const { username } = useParams();
+    const [activeBtnId, setActiveBtnId] = useState(null)
 
     const fetchUserInterests = () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-interests`)
@@ -62,6 +63,7 @@ function SetHobby() {
 
     const handleHobbyClick = (e, hobbyId) => {
       e.preventDefault()
+      setActiveBtnId(hobbyId)
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/update-hobby/${hobbyId}`, {
         method: 'POST',
         headers: {
@@ -94,15 +96,15 @@ function SetHobby() {
     return (
       <div className="hobbies-select">
         {findHobbies.map((hobby) => (
-          <div onClick={(e) => handleHobbyClick(e, hobby.id)}>
-            {hobby.name}
+          <div onClick={(e) => handleHobbyClick(e, hobby.id)} class="hobby-btn" key={hobby.id} style={{backgroundColor: activeBtnId === hobby.id ? '#c94e50' : '#fffce1'}}>
+            <h2>{hobby.name}</h2>
           </div>
         ))}
         <div>
         { result && <p>{result}</p>}
         </div>
         <button onClick={handleSave}>Save Hobby</button>
-        {save &&  (<Navigate to={`/${username}/${selectedHobby}`}/>)}
+        {save &&  (<Navigate to={`/${selectedHobby}`}/>)}
       </div>
     )
 
