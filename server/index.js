@@ -23,6 +23,7 @@ const clients = {}
 
 // NOTIFICATONS
 
+
 pgClient.connect()
 
 pgClient.query('LISTEN new_user')
@@ -106,6 +107,7 @@ app.get("/", async (req, res) => {
 })
 
 app.get('/notifications/:userId', async (req,res) => {
+    console.log("hellur")
     const { userId } = req.params
     const notifications = await prisma.notification.findMany({
         where: { userId: parseInt(userId) },

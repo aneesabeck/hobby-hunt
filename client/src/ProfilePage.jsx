@@ -8,7 +8,6 @@ const ProfilePage = ({ user, hobbyName, hobbyId, setUsername, handleNewHobby, fe
     const intHobbyId = parseInt(hobbyId)
     const [editOpen, setEditOpen] = useState(false)
     const [bgColor, setBgColor] = useState(user?.backgroundColor)
-    console.log
 
     function changeTheHobby(e) {
       var hobbyId = e.target.value;
@@ -46,11 +45,6 @@ const ProfilePage = ({ user, hobbyName, hobbyId, setUsername, handleNewHobby, fe
         console.error('Error:', error)
       })
     }
-
-    // useEffect(() => {
-    //   // console.log("use effect 2")
-    //   fetchCurrentUser()
-    // }, [user])
 
 
 

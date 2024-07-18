@@ -23,7 +23,6 @@ function App() {
   const cookies = Cookies.get('username')
 
   useEffect(() => {
-    console.log("APP JSXXXX")
     if (cookies == null) {
       setUser(null)
       setHobby("")
@@ -45,12 +44,10 @@ function App() {
       }),
     })
     .then(response => {
-      console.log("res", response)
       return response.json()
 
     })
     .then(data => {
-      console.log("data", data)
       setHobbyId(data.hobbyId)
       setUser(data)
       setHobby(data.hobbyName)
@@ -61,9 +58,7 @@ function App() {
   }
 
   const fetchCurrentHobby = async () => {
-    console.log()
     if (hobbyId == null) {
-      console.log("hobbyId is null")
       return
     }
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/get-hobby`)
@@ -92,7 +87,6 @@ const fetchCurrentUser = async () => {
       return response.json();
   })
   .then(data => {
-      console.log("user data", data)
       setHobbyId(data.hobbyId)
       setUser(data)
       setUserId(data.id)
@@ -105,7 +99,6 @@ const fetchCurrentUser = async () => {
 
 
 useEffect(() => {
-  console.log("use effect")
   fetchCurrentUser()
 }, [])
 

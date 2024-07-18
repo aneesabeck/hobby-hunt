@@ -109,7 +109,7 @@ function SetHobby({ username, setUser, setHobbyId }) {
         { result && <p>{result}</p>}
         </div>
         <button onClick={handleSave}>Save Hobby</button>
-        {save &&  (<Navigate to={`/${selectedHobby}`}/>)}
+        {save &&  (<Navigate to={`/hobby-community/${selectedHobby}`}/>)}
       </div>
     )
 

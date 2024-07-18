@@ -4,9 +4,6 @@ import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
 
 const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
-    console.log("userId", userId)
-    console.log("hobbyName", hobbyName)
-    console.log("hobbyId", hobbyId)
     const [notifications, setNotifications] = useState([])
     const intHobbyId = parseInt(hobbyId)
 
@@ -24,6 +21,7 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
             console.error('error fetching notifs:', error)
         })
     }
+
 
     useEffect(() => {
         fetchNotifications()
@@ -66,17 +64,15 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
               },
             })
             .then(response => {
-              console.log("res", response)
+  
             })
             .then(data => {
-                console.log("data", data)
                 setNotifications(notifications.filter((notif) => notif.id !== notifId))
             })
             .catch(error => {
               console.error('error deleting notif:', error)
             })
     }
-    console.log(notifications)
     
 
     return (

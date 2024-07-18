@@ -46,7 +46,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             console.log(error)
         })
     }
-    console.log("hobby", hobbyId)
 
     const fetchCurrentHobby = async () => {
         if (!hobbyId) {
@@ -98,7 +97,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         .then(data => {
             setUser(data)
             setUserId(data.id)
-            console.log("set liked posts")
             setLikedPosts(data.likedPosts)
         })
         .catch(error => {
@@ -235,8 +233,6 @@ function changeTheHobby(e) {
     handleNewHobby(hobbyId);
 }
 
-
-   console.log(handleNewHobby)
 
 
    // get the list of drop-down options from the server
