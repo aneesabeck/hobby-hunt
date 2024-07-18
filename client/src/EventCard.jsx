@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
+import React from 'react'
 import './EventCard.css'
 
 function EventCard({title, address, description}) {

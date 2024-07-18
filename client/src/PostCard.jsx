@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
 import './PostCard.css'
 import ModalComment from './ModalComment'
+import ModalEditPost from './ModalEditPost'
+import ModalViewProf from './ModalViewProf'
 
-function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUser, fetchPosts}) {
+function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username, likes, currentUser, fetchPosts, handleDelete}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
     const [liked, setLiked] = useState(false)
     const [comOpen, setComOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
+    const [profOpen, setProfOpen] = useState(false)
+    const [userClicked, setUserClicked] = useState(null)
 
 
     const handleLikes = async (postId) => {
-        if (liked === false) {
+        if ((liked === false) && (!likedPosts.includes(postId))) {
             setLiked(true)
-            console.log("liked")
-            console.log(liked)
-            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/like`, 
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${currentUser}/${postId}/like`, 
                 {
                   method: "POST",
                   headers: {
@@ -29,14 +31,15 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 })
                 .then(data => {
                   setCurrentLikes(data.likes)
+                  setLikedPosts(data.likedPosts)
                   fetchPosts()
                 })
                 .catch(error => {
                   console.error('error fetching post:', error)
                 })
-        } else if (liked === true) {
+        } else if ((liked === true) || (likedPosts.includes(postId))) {
             setLiked(false)
-            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${postId}/dislike`, 
+            fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/posts/${currentUser}/${postId}/dislike`, 
                 {
                   method: "POST",
                   headers: {
@@ -51,6 +54,7 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
                 })
                 .then(data => {
                   setCurrentLikes(data.likes)
+                  setLikedPosts(data.likedPosts)
                   fetchPosts()
                 })
                 .catch(error => {
@@ -59,41 +63,58 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
         }
     }
 
-    const handleDelete = async (postId) => {
-        console.log(currentUser)
-        console.log(postId)
-        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${currentUser}/delete/${postId}`, 
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP Error status: ${response.status}`)
-              }
-              return response.json()
-            })
-            .then(data => {
-              fetchPosts()
-            })
-            .catch(error => {
-              console.error('error fetching post:', error)
-            })
-    }
+   
 
-    const handleEdit = async (postId) => {
-        console.log(postId)
-    }
+
+    const fetchClickedUser = async () => {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`status: ${response.status}`)
+          }
+          return response.json();
+      })
+      .then(data => {
+          setUserClicked(data)
+      })
+      .catch(error => {
+          console.error('error fetching user:', error)
+      })
+  
+  }
+
+  useEffect(() => {
+    fetchClickedUser()
+}, [profOpen])
+
 
     function closeComments() {
         setComOpen(false)
       }
     
-      function openComments() {
-        setComOpen(true)
-      }
+    function openComments() {
+      setComOpen(true)
+    }
+
+    function closeEdits() {
+      setEditOpen(false)
+    }
+  
+    function openEdits() {
+      setEditOpen(true)
+    }
+
+    function handleClickUser() {
+      setProfOpen(true)
+    }
+
+    function closeProf() {
+      setProfOpen(false)
+    }
+
+    function openProf() {
+      setProfOpen(true)
+    }
 
 
     return (
@@ -101,13 +122,15 @@ function PostCard({postId, imgUrl, caption, hobbyId, username, likes, currentUse
             <div className='post'>
                 <img src={imgUrl}/>
                 <h2>{caption}</h2>
-                <p>{username}</p>
+                <p onClick={handleClickUser} className='post-author'>{username}</p>
                 <button onClick={()=> handleLikes(postId)}>Likes: {currentLikes}</button>
                 <button onClick={openComments}>Comments </button>
                 {username === currentUser && (<button onClick={() => handleDelete(postId)}>Delete Post</button>)}
-                {username === currentUser && (<button onClick={handleEdit}>Edit Post</button>)}
+                {username === currentUser && (<button onClick={openEdits}>Edit Post</button>)}
             </div>
             {comOpen && <ModalComment closeComments={closeComments} postId={postId} username={currentUser}/>}
+            {editOpen && <ModalEditPost closeEdits={closeEdits} postId={postId} username={currentUser} fetchPosts={fetchPosts}/>}
+            {profOpen && <ModalViewProf closeProf={closeProf} username={username} userArray={userClicked}/>}
         </div>
     )
 }

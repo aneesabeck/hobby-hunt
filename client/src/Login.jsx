@@ -3,12 +3,12 @@ import { Link, Navigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import './Login.css'
+import Cookies from 'js-cookie'
 
-function Login({ setUsername }) {
+function Login({ setUsername, setUserArray, setHobbyId }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
-    const [currentUser, setCurrentUser] = useState(null)
     const [hobby, SetHobby] = useState(null)
   
     const handleChangeUser = (e) => {
@@ -36,11 +36,16 @@ function Login({ setUsername }) {
               setResult("login success!");
               setUsername(user)
               fetchUserHobby()
-              // return currentUser
+              return response.json()
             }
             else {
               setResult("failed to login!");
             }
+          })
+          .then(data => {
+            setHobbyId(data.hobbyId)
+            setUserArray(data)
+            Cookies.set('username', data.username, { expires: 7 })
           })
           .catch(error => {
             setResult("failed to login!");
@@ -74,10 +79,12 @@ function Login({ setUsername }) {
             </Link>
             <h1 className='login-title'>Log in</h1>
         </div>
+
       <div className='user-pass'>       
         <label className='username-input'>Username: <input onChange={handleChangeUser} value={user} placeholder='Enter your username' required></input></label>
         <label className='password-input'>Password: <input onChange={handleChangePassword} value={password} placeholder='Enter your password' required></input></label>
       </div>
+      
       <div className='login-btns'>
         <Link to="/login">
           <button onClick={handleLogin} className='login-btn'>Log in</button>
@@ -89,7 +96,7 @@ function Login({ setUsername }) {
       <div>
         { result && <p>{result}</p>}
       </div>
-      {hobby && (<Navigate to={`/${hobby}`} replace={true}/>)}
+      {hobby && (<Navigate to={`/hobby-community/${hobby}`} replace={true}/>)}
       </>
     )
 

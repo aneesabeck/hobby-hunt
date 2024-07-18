@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import "./SetHobby.css";
+import Cookies from 'js-cookie'
 
-function SetHobby({ username }) {
+function SetHobby({ username, setUser, setHobbyId }) {
     const [dbHobbies, setDBHobbies] = useState([])
     const [userInterests, setUserInterests] = useState([])
     const [selectedHobby, setSelectedHobby] = useState(null)
@@ -71,13 +72,18 @@ function SetHobby({ username }) {
         },
     })
         .then(response => {
-            if (response.ok) {
-                return response.json()
-            }
-            throw new Error('failed to set profile')
+            // if (response.ok) {
+            // console.log(response.json())
+            return response.json()
+      
+            // }
+            // throw new Error('failed to set profile')
         })
         .then(data => {
+          Cookies.set('username', data.username, { expires: 7 })
           setSelectedHobby(hobbyId)
+          setHobbyId(hobbyId)
+          setUser(data)
         })
         .catch((error) => {
             console.error("Error:", error)
@@ -86,7 +92,6 @@ function SetHobby({ username }) {
     const findHobbies = getDBHobbies()
 
     const handleSave = () => {
-      console.log("selectedhobby", selectedHobby)
       if (selectedHobby != null){
         setSave("Success")
       }
@@ -104,7 +109,7 @@ function SetHobby({ username }) {
         { result && <p>{result}</p>}
         </div>
         <button onClick={handleSave}>Save Hobby</button>
-        {save &&  (<Navigate to={`/${selectedHobby}`}/>)}
+        {save &&  (<Navigate to={`/hobby-community/${selectedHobby}`}/>)}
       </div>
     )
 
