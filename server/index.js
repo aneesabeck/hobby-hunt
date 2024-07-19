@@ -36,6 +36,20 @@ pgClient.on('notification', async (msg) => {
         type: msg.channel,
         ...payload,
     }
+    const handleMsgChannelNotification = async (notifications, usersToNotify) => {
+        await prisma.notification.createMany({
+            data: notifications,
+        })
+    
+        usersToNotify.forEach(user => {
+            const client = clients[user.id]
+            if (client && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data))
+            }
+        })
+    }
+
+
     if (msg.channel === 'new_user') {
         const { hobbyId, username } = payload;
         const usersToNotify = await prisma.user.findMany({
@@ -47,17 +61,8 @@ pgClient.on('notification', async (msg) => {
             message: `New User: ${username}`,
             userId: user.id
         }))
+        handleMsgChannelNotification(notifications, usersToNotify)
 
-        await prisma.notification.createMany({
-            data: notifications,
-        })
-    
-        usersToNotify.forEach(user => {
-            const client = clients[user.id]
-            if (client && client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data))
-            }
-        })
     } else if (msg.channel === 'new_post'){
         const { hobbyId, caption, username } = payload;
         const usersToNotify = await prisma.user.findMany({
@@ -70,16 +75,7 @@ pgClient.on('notification', async (msg) => {
             userId: user.id
         }))
 
-        await prisma.notification.createMany({
-            data: notifications,
-        })
-    
-        usersToNotify.forEach(user => {
-            const client = clients[user.id]
-            if (client && client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data))
-            }
-        })
+        handleMsgChannelNotification(notifications, usersToNotify)
     }
 })
 

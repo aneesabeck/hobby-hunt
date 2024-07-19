@@ -4,23 +4,14 @@ import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
 
 const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notifications, setNotifications }) => {
-    // const [notifications, setNotifications] = useState([])
     const intHobbyId = parseInt(hobbyId)
-
-
 
     useEffect(() => {
         fetchNotifications(userId)
     }, [userId])
 
-    useEffect(() => {
-      if (notifications == []) {
-      }
-  }, [notifications])
-
   useEffect(() => {
     const timestamp = new Date().toISOString()
-    console.log("time", timestamp)
     markRead(timestamp)
 }, [])
 

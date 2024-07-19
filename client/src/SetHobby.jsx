@@ -72,12 +72,7 @@ function SetHobby({ username, setUser, setHobbyId }) {
         },
     })
         .then(response => {
-            // if (response.ok) {
-            // console.log(response.json())
             return response.json()
-      
-            // }
-            // throw new Error('failed to set profile')
         })
         .then(data => {
           Cookies.set('username', data.username, { expires: 7 })

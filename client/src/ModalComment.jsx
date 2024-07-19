@@ -56,12 +56,6 @@ const ModalComment = ({ closeComments, postId, username }) => {
         })
     }
 
-    function handleCloseModal() {
-        closeModal()
-    }
-
-
-
 
     return (
         <>
