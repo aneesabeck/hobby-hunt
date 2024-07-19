@@ -10,7 +10,7 @@ import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
 
 
-function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby }) {
+function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby, fetchNotifications, notifications }) {
     const { hobbyParam } = useParams()
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
@@ -105,34 +105,38 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     
     }
 
-    const changeToHobby = useCallback((details) => {
-        
-
-    })
-
     useEffect(() => {
         fetchCurrentHobby()
+        fetchCurrentUser()
+        if (userId != null) {
+            fetchNotifications(userId)
+        }
     }, [hobbyId])
 
     useEffect(() => {
-        fetchCurrentUser()
-    }, [posts])
+        // fetchCurrentHobby()
+        // fetchCurrentUser()
+        if (userId != null) {
+            fetchNotifications(userId)
+        }
+    }, [notifications])
 
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [username])
-
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [cookies])
-
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [cookies])
+    // useEffect(() => {
+    //     fetchCurrentUser()
+    // }, [posts])
 
     // useEffect(() => {
     //     fetchCurrentHobby()
     // }, [username])
+
+    // useEffect(() => {
+    //     fetchCurrentHobby()
+    // }, [cookies])
+
+    // useEffect(() => {
+    //     fetchCurrentHobby()
+    // }, [cookies])
+
     
 
     useEffect(() => {
@@ -144,23 +148,23 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         }
     }, [currentHobby])
 
-    useEffect(() => {
-        if (currentHobby !== null) {
-            currentHobbyRef.current = currentHobby
-            fetchPosts()
-            fetchEvents()
-            fetchCurrentUser()
-        }
-    }, [cookies])
+    // useEffect(() => {
+    //     if (currentHobby !== null) {
+    //         currentHobbyRef.current = currentHobby
+    //         fetchPosts()
+    //         fetchEvents()
+    //         fetchCurrentUser()
+    //     }
+    // }, [cookies])
 
-    useEffect(() => {
-        if (currentHobby !== null) {
-            currentHobbyRef.current = currentHobby
-            fetchPosts()
-            fetchEvents()
-            fetchCurrentUser()
-        }
-    }, [username])
+    // useEffect(() => {
+    //     if (currentHobby !== null) {
+    //         currentHobbyRef.current = currentHobby
+    //         fetchPosts()
+    //         fetchEvents()
+    //         fetchCurrentUser()
+    //     }
+    // }, [username])
 
     const handleDelete = async (postId) => {
 
@@ -236,6 +240,7 @@ function changeTheHobby(e) {
 
 
    // get the list of drop-down options from the server
+   const unreadNotifs = notifications.filter((notification) => !notification.read)
 
 
     return (
@@ -259,6 +264,9 @@ function changeTheHobby(e) {
             </div>
             <div className='events'>
                 {allEvents}
+                <h3 onClick={(<Navigate to={`/alerts`}/>)}>Unread Alerts: {unreadNotifs.length}</h3>
+                {console.log("unread", unreadNotifs)}
+                {console.log("all", notifications)}
             </div>
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId}/>}
             <WebSocketService userId={parseInt(userId)}/>

@@ -107,7 +107,6 @@ app.get("/", async (req, res) => {
 })
 
 app.get('/notifications/:userId', async (req,res) => {
-    console.log("hellur")
     const { userId } = req.params
     const notifications = await prisma.notification.findMany({
         where: { userId: parseInt(userId) },
@@ -656,6 +655,27 @@ app.get("/:hobbyId/posts/search", async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send('server error')
+    }
+})
+
+app.put('/notifications/:userid/read', async (req, res) => {
+    const { userid } = req.params
+    console.log(userid)
+    const { timestamp } = req.body
+    console.log(timestamp)
+    console.log(new Date(timestamp))
+    try {
+        const updatedNotification = await prisma.notification.updateMany({
+            where: { userId: parseInt(userid),
+                    createdAt: { lt: new Date(timestamp) },
+                    read: false,
+             },
+            data: { read: true },
+        })
+        console.log("up", updatedNotification)
+        res.json(updatedNotification)
+    } catch (error) {
+        console.log(error)
     }
 })
 
