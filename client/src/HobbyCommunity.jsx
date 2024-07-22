@@ -10,18 +10,15 @@ import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
 
 
-function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby }) {
-    const { hobbyParam } = useParams()
+function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby, fetchNotifications, notifications }) {
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
     const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
     const [isOpen, setIsOpen] = useState(false)
-    const [changeHobby, setChangeHobby] = useState(null)
     const [sort, setSort] = useState('asc')
     const [likedPosts, setLikedPosts] = useState([])
-    const cookies = Cookies.get('username')
 
 
     const fetchPosts = async () => {
@@ -105,35 +102,20 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     
     }
 
-    const changeToHobby = useCallback((details) => {
-        
-
-    })
-
     useEffect(() => {
         fetchCurrentHobby()
+        fetchCurrentUser()
+        if (userId != null) {
+            fetchNotifications(userId)
+        }
     }, [hobbyId])
 
     useEffect(() => {
-        fetchCurrentUser()
-    }, [posts])
+        if (userId != null) {
+            fetchNotifications(userId)
+        }
+    }, [notifications])
 
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [username])
-
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [cookies])
-
-    useEffect(() => {
-        fetchCurrentHobby()
-    }, [cookies])
-
-    // useEffect(() => {
-    //     fetchCurrentHobby()
-    // }, [username])
-    
 
     useEffect(() => {
         if (currentHobby !== null) {
@@ -143,24 +125,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             fetchCurrentUser()
         }
     }, [currentHobby])
-
-    useEffect(() => {
-        if (currentHobby !== null) {
-            currentHobbyRef.current = currentHobby
-            fetchPosts()
-            fetchEvents()
-            fetchCurrentUser()
-        }
-    }, [cookies])
-
-    useEffect(() => {
-        if (currentHobby !== null) {
-            currentHobbyRef.current = currentHobby
-            fetchPosts()
-            fetchEvents()
-            fetchCurrentUser()
-        }
-    }, [username])
 
     const handleDelete = async (postId) => {
 
@@ -223,24 +187,11 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         fetchPosts()
     }, [sort])
 
-    useEffect(() => {
-        setChangeHobby("Success")
-    }, [hobbyId])
-
-
-function changeTheHobby(e) {
-    var hobbyId = e.target.value;
-    handleNewHobby(hobbyId);
-}
-
-
-
-   // get the list of drop-down options from the server
+   const unreadNotifs = notifications.filter((notification) => !notification.read)
 
 
     return (
         <>
-        {/* {handleNewHobby && (<Navigate to={`/hobby-community/${hobbyId}`} replace={true}/>)} */}
         {!username &&  (<Link to="/login"><button className='header-button'>Login</button> </Link> )}
         {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
         <div className='community-page'>
@@ -259,6 +210,9 @@ function changeTheHobby(e) {
             </div>
             <div className='events'>
                 {allEvents}
+                <h3 onClick={(<Navigate to={`/alerts`}/>)}>Unread Alerts: {unreadNotifs.length}</h3>
+                {console.log("unread", unreadNotifs)}
+                {console.log("all", notifications)}
             </div>
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId}/>}
             <WebSocketService userId={parseInt(userId)}/>

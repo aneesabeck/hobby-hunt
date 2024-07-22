@@ -112,10 +112,6 @@ function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username,
       setProfOpen(false)
     }
 
-    function openProf() {
-      setProfOpen(true)
-    }
-
 
     return (
         <div>

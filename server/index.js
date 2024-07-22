@@ -36,6 +36,20 @@ pgClient.on('notification', async (msg) => {
         type: msg.channel,
         ...payload,
     }
+    const handleMsgChannelNotification = async (notifications, usersToNotify) => {
+        await prisma.notification.createMany({
+            data: notifications,
+        })
+    
+        usersToNotify.forEach(user => {
+            const client = clients[user.id]
+            if (client && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data))
+            }
+        })
+    }
+
+
     if (msg.channel === 'new_user') {
         const { hobbyId, username } = payload;
         const usersToNotify = await prisma.user.findMany({
@@ -47,17 +61,8 @@ pgClient.on('notification', async (msg) => {
             message: `New User: ${username}`,
             userId: user.id
         }))
+        handleMsgChannelNotification(notifications, usersToNotify)
 
-        await prisma.notification.createMany({
-            data: notifications,
-        })
-    
-        usersToNotify.forEach(user => {
-            const client = clients[user.id]
-            if (client && client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data))
-            }
-        })
     } else if (msg.channel === 'new_post'){
         const { hobbyId, caption, username } = payload;
         const usersToNotify = await prisma.user.findMany({
@@ -70,16 +75,7 @@ pgClient.on('notification', async (msg) => {
             userId: user.id
         }))
 
-        await prisma.notification.createMany({
-            data: notifications,
-        })
-    
-        usersToNotify.forEach(user => {
-            const client = clients[user.id]
-            if (client && client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data))
-            }
-        })
+        handleMsgChannelNotification(notifications, usersToNotify)
     }
 })
 
@@ -107,7 +103,6 @@ app.get("/", async (req, res) => {
 })
 
 app.get('/notifications/:userId', async (req,res) => {
-    console.log("hellur")
     const { userId } = req.params
     const notifications = await prisma.notification.findMany({
         where: { userId: parseInt(userId) },
@@ -656,6 +651,27 @@ app.get("/:hobbyId/posts/search", async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send('server error')
+    }
+})
+
+app.put('/notifications/:userid/read', async (req, res) => {
+    const { userid } = req.params
+    console.log(userid)
+    const { timestamp } = req.body
+    console.log(timestamp)
+    console.log(new Date(timestamp))
+    try {
+        const updatedNotification = await prisma.notification.updateMany({
+            where: { userId: parseInt(userid),
+                    createdAt: { lt: new Date(timestamp) },
+                    read: false,
+             },
+            data: { read: true },
+        })
+        console.log("up", updatedNotification)
+        res.json(updatedNotification)
+    } catch (error) {
+        console.log(error)
     }
 })
 

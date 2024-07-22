@@ -18,22 +18,21 @@ function App() {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState(Cookies.get('username'))
   const [userId, setUserId] = useState("")
-  const [hobby, setHobby] = useState("")
+  const [hobbyName, setHobbyName] = useState("")
   const [hobbyId, setHobbyId] = useState(null)
+  const [notifications, setNotifications] = useState([])
   const cookies = Cookies.get('username')
 
   useEffect(() => {
     if (cookies == null) {
       setUser(null)
-      setHobby("")
+      setHobbyName("")
       setUsername("")
     }
 }, [cookies])
 
 
   const handleNewHobby = (newHobbyId) => {
-    // const newhobbyId = e.target.value
-    // remove this put, because changing dropdown shouldn't affect the state
     fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/change-hobby`, {
       method: 'PUT',
       headers: {
@@ -50,7 +49,7 @@ function App() {
     .then(data => {
       setHobbyId(data.hobbyId)
       setUser(data)
-      setHobby(data.hobbyName)
+      setHobbyName(data.hobbyName)
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -66,7 +65,7 @@ function App() {
       return response.json()
     })
     .then(data => {
-        setHobby(data.name)
+        setHobbyName(data.name)
     })
     .catch(error => {
         console.error('error fetching hobby:', error)
@@ -95,6 +94,20 @@ const fetchCurrentUser = async () => {
       console.error('error fetching user:', error)
   })
 
+}
+
+const fetchNotifications = async (userId) => {
+  fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}`)
+  .then(response => {
+      return response.json();
+  })
+  .then(data => {
+      setNotifications(data)
+  })
+  .catch(error => {
+      setNotifications([])
+      console.error('error fetching notifs:', error)
+  })
 }
 
 
@@ -134,9 +147,9 @@ useEffect(() => {
             <Route path="/profile-setup" element={<SetProfile username={username} setUserId={setUserId}/>}/>
             <Route path="interests" element={<SetInterests username={username}/>}/>
             <Route path="/select-hobby" element={<SetHobby username={username} setUser={setUser} setHobbyId={setHobbyId}/>}/>
-            <Route path="/hobby-community/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobby} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} handleNewHobby={handleNewHobby}/>}/>
-            <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobby} hobbyId={hobbyId}/>}/>
-            <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobby} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
+            <Route path="/hobby-community/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobbyName} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} handleNewHobby={handleNewHobby} fetchNotifications={fetchNotifications} notifications={notifications}/>}/>
+            <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobbyName} hobbyId={hobbyId} fetchNotifications={fetchNotifications} notifications={notifications} setNotifications={setNotifications}/>}/>
+            <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobbyName} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
       </Routes>
 
 

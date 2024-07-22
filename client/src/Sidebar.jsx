@@ -5,7 +5,6 @@ import { slide as Menu } from 'react-burger-menu'
 import Cookies from 'js-cookie'
 
 function Sidebar({ hobbyName, hobbyId }) {
-    const [sidebar, setSidebar] = useState(false);
     const [community, setCommunity] = useState(null)
     const [details, setDetails] = useState(null)
     const [profile, setProfile] = useState(null)

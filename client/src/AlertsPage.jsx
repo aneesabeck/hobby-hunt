@@ -3,34 +3,37 @@ import Sidebar from './Sidebar'
 import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
 
-const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
-    const [notifications, setNotifications] = useState([])
+const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notifications, setNotifications }) => {
     const intHobbyId = parseInt(hobbyId)
 
-
-    const fetchNotifications = async () => {
-        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}`)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            setNotifications(data)
-        })
-        .catch(error => {
-            setNotifications([])
-            console.error('error fetching notifs:', error)
-        })
-    }
-
-
     useEffect(() => {
-        fetchNotifications()
+        fetchNotifications(userId)
     }, [userId])
 
-    useEffect(() => {
-      if (notifications == []) {
-      }
-  }, [notifications])
+  useEffect(() => {
+    const timestamp = new Date().toISOString()
+    markRead(timestamp)
+}, [])
+
+    const markRead = async (timestamp) => {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}/read`, 
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ timestamp })
+        })
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+            fetchNotifications(userId)
+        })
+        .catch(error => {
+          console.error('error marking read:', error)
+        })
+    }
 
 
     const handleClear = async (userId) => {
@@ -48,7 +51,7 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
               return response.json()
             })
             .then(data => {
-                fetchNotifications()
+                fetchNotifications(userId)
             })
             .catch(error => {
               console.error('error clearing notifs:', error)
@@ -83,6 +86,11 @@ const AlertsPage = ({ userId, hobbyName, hobbyId }) => {
             {notifications.map(notification => (
                 <div key={notification.id} >
                     {notification.message}
+                    {notification.read ? (
+                      <p>read </p>
+                    ) : (
+                      <p>not read</p>
+                    )}
                     <button onClick={() => handleDelete(notification.id)}>Delete</button>
                 </div>
             ))}

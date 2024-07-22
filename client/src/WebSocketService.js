@@ -4,11 +4,6 @@ import bell from './assets/bell.wav'
 
 const WebSocketService = ({ userId }) => {
     const socketRef = useRef(null)
-    // const playNotificationSound = () => {
-    //     const audio = new Audio('/assets/bell.wav')
-    //     console.log("play")
-    //     audio.play()
-    // }
     const playNotificationSound = () => {
         console.log("play")
         new Audio(bell).play()

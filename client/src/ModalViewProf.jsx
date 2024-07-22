@@ -1,29 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./ModalEditPost.css";
 
-const ModalEditPost = ({ closeProf, username, userArray }) => {
-
-    function handleCloseModal() {
-        closeEdits()
-    }
-
-    const fetchCurrentUser = async () => {
-        fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`status: ${response.status}`)
-            }
-            return response.json();
-        })
-        .then(data => {
-            setUser(data)
-            setUserId(data.id)
-        })
-        .catch(error => {
-            console.error('error fetching user:', error)
-        })
-    
-    }
+const ModalViewProf = ({ closeProf, username, userArray }) => {
 
 
     return (
@@ -53,4 +31,4 @@ const ModalEditPost = ({ closeProf, username, userArray }) => {
 
 
 
-export default ModalEditPost;
+export default ModalViewProf;
