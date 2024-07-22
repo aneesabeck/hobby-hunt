@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import useSound from 'use-sound'
 import bell from './assets/bell.wav'
 
-const WebSocketService = ({ userId }) => {
+const WebSocketService = ({ userId, fetchNotifications }) => {
     const socketRef = useRef(null)
     const playNotificationSound = () => {
         console.log("play")
@@ -11,24 +11,32 @@ const WebSocketService = ({ userId }) => {
 
 
     useEffect(() => {
+        console.log("effecting")
         socketRef.current = new WebSocket('ws://localhost:8080')
+        console.trace('websocket connected')
         socketRef.current.onopen = () => {
-            console.log('websocket connected')
+            // console.trace('websocket connected')
             socketRef.current.send(JSON.stringify({ userId }))
         }
         socketRef.current.onmessage = (event) => {
             console.log('received message:', event.data)
             playNotificationSound()
+            fetchNotifications(userId)
         }
         socketRef.current.onclose = () => {
-            console.log('websocket closed')
+            console.error('websocket closed')
         }
         socketRef.current.onerror = (error) => {
             console.log('error', error)
         }
-        return () => {
-            socketRef.current.close()
-        }
+
+        // socketRef.addEventListener("open", (event) => {
+        //     socketRef.current.send(JSON.stringify({ userId }))
+        //   });
+
+        // return () => {
+        //     socketRef.current.close()
+        // }
     }, [userId])
     return null
 }

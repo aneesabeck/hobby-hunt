@@ -5,10 +5,15 @@ import Cookies from 'js-cookie'
 
 const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notifications, setNotifications }) => {
     const intHobbyId = parseInt(hobbyId)
+    const [filter, setFilter] = useState("all")
+   
+    
+    
 
     useEffect(() => {
         fetchNotifications(userId)
     }, [userId])
+
 
   useEffect(() => {
     const timestamp = new Date().toISOString()
@@ -16,6 +21,9 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
 }, [])
 
     const markRead = async (timestamp) => {
+      if (userId == null) {
+        return
+      }
       fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}/read`, 
         {
           method: "PUT",
@@ -24,12 +32,10 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
           },
           body: JSON.stringify({ timestamp })
         })
-        .then(response => {
-          return response.json()
-        })
-        .then(data => {
-            fetchNotifications(userId)
-        })
+        // .then(response => {
+        //   console.log(response)
+        //   return response.json()
+        // })
         .catch(error => {
           console.error('error marking read:', error)
         })
@@ -76,6 +82,28 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
               console.error('error deleting notif:', error)
             })
     }
+
+    // const sortedNotifs = notifications
+
+    // function sortNotifs(type) {
+    //     if (notifications == null) {
+    //       return
+    //     }
+    //     console.log("sort notifications", notifications)
+    //     if (type === "unread") {
+    //       const newNotifs = notifications.filter(notif => (!notif.read))
+    //       setSortedNotifs(newNotifs)
+    //       // setNotifications(newNotifs);
+    //     } else if (type === "read") {
+    //       const newNotifs = notifications.filter(notif => (notif.read))
+    //       setSortedNotifs(newNotifs)
+    //       // setNotifications(newNotifs)
+    //     } else if (type === "all") {
+    //       setSortedNotifs(notifications)
+    //       // setNotifications(notifications)
+    //     }
+    // }
+    // console.log("sorted", sortedNotifs)
     
 
     return (
@@ -83,7 +111,18 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
         <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={intHobbyId}/>
         <h2>Alerts</h2>
         <div>
-            {notifications.map(notification => (
+          <button onClick={() => setFilter("unread")}>New Alerts</button>
+          <button onClick={() => setFilter("read")}>Read Alerts</button>
+          <button onClick={() => setFilter("all")}>All Alerts</button>
+            {notifications.filter((notif) => 
+              {if (filter === "unread") {
+                  return (!notif.read)
+              } else if (filter === "read") {
+                  return (notif.read)
+             } else if (filter === "all") {
+                  return (true)
+             }
+            }).map(notification => (
                 <div key={notification.id} >
                     {notification.message}
                     {notification.read ? (
@@ -98,7 +137,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
             {(notifications.length === 0) && (<h3>No recent notifications</h3>)}
 
         </div>
-        <WebSocketService userId={parseInt(userId)}/>
         </div>
     )
 

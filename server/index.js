@@ -11,6 +11,7 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const saltRounds = 14;
 const app = express()
+const job = require('./cronJob')
 const PORT = 3000
 const wss = new WebSocket.Server({ port: 8080 }, () => {
     console.log("Websocket server is running on ws://localhost:8080")
@@ -18,6 +19,7 @@ const wss = new WebSocket.Server({ port: 8080 }, () => {
 
 app.use(express.json());
 app.use(cors());
+job.start()
 
 const clients = {}
 
@@ -40,9 +42,12 @@ pgClient.on('notification', async (msg) => {
         await prisma.notification.createMany({
             data: notifications,
         })
+
+
     
         usersToNotify.forEach(user => {
             const client = clients[user.id]
+            // await prisma.notification.findMany
             if (client && client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(data))
             }
@@ -84,6 +89,10 @@ wss.on('connection', (ws) => {
         const { userId } = JSON.parse(message)
         clients[userId] = ws
     })
+
+    ws.on('error', (e) => {
+        console.error("error on ws", e);
+    })
     ws.on('close', () => {
         Object.keys(clients).forEach(key => {
             if (clients[key] === ws) {
@@ -108,6 +117,31 @@ app.get('/notifications/:userId', async (req,res) => {
         where: { userId: parseInt(userId) },
         orderBy: { createdAt: 'desc'}
     })
+    // console.log(notifications)
+    // const readNotifs = await prisma.notification.findMany({
+    //     where: { userId: parseInt(userId),
+    //             createdAt: { gt: new Date(timestamp) },
+    //             read: true,
+    //      },
+    //     orderBy: { createdAt: 'desc'}
+    // })
+    // const unreadNotifs = await prisma.notification.findMany({
+    //     where: { userId: parseInt(userId),
+    //             createdAt: { lt: new Date(timestamp) },
+    //             read: false,
+    //      },
+    //     orderBy: { createdAt: 'desc'}
+    // })
+    // const allNotifs = {"read": [], "unread": []}
+    // for (let notif of notifications) {
+    //     if (notif.read) {
+    //         allNotifs.read.push(notif)
+    //     } else {
+    //         allNotifs.unread.push(notif)
+    //     }
+       
+    // }
+    // console.log("notifications")
     res.json(notifications)
 })
 
@@ -673,6 +707,10 @@ app.put('/notifications/:userid/read', async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+})
+
+app.put('/questionaire', async (req, res) => {
+    
 })
 
     

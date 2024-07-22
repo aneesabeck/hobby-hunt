@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
+import { Link, useParams, Navigate, redirect, useNavigate } from 'react-router-dom'
 import './HobbyCommunity.css'
 import PostCard from './PostCard'
 import EventCard from './EventCard'
@@ -23,10 +23,10 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
 
     const fetchPosts = async () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/posts`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`status: ${response.status}`)
-            }
+        .then(response => { 
+            // if (!response.ok) {
+            //     throw new Error(`status: ${response.status}`)
+            // }
             return response.json();
         })
         .then(data => {
@@ -105,16 +105,16 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     useEffect(() => {
         fetchCurrentHobby()
         fetchCurrentUser()
-        if (userId != null) {
-            fetchNotifications(userId)
-        }
+        // if (userId != null) {
+        //     fetchNotifications(userId)
+        // }
     }, [hobbyId])
 
-    useEffect(() => {
-        if (userId != null) {
-            fetchNotifications(userId)
-        }
-    }, [notifications])
+    // useEffect(() => {
+    //     if (userId != null) {
+    //         fetchNotifications(userId)
+    //     }
+    // }, [notifications])
 
 
     useEffect(() => {
@@ -189,6 +189,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
 
    const unreadNotifs = notifications.filter((notification) => !notification.read)
 
+    const navigate = useNavigate()
 
     return (
         <>
@@ -210,12 +211,12 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
             </div>
             <div className='events'>
                 {allEvents}
-                <h3 onClick={(<Navigate to={`/alerts`}/>)}>Unread Alerts: {unreadNotifs.length}</h3>
-                {console.log("unread", unreadNotifs)}
-                {console.log("all", notifications)}
+                <button onClick={() => {console.log("test"); navigate("/alerts")}}>Unread Alerts: {unreadNotifs.length}</button>
+                {/* {console.log("unread", unreadNotifs)}
+                {console.log("all", notifications)} */}
             </div>
             {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId}/>}
-            <WebSocketService userId={parseInt(userId)}/>
+            
         </div>
         </>
     )

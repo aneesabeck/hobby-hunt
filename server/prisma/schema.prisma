@@ -39,6 +39,7 @@ model Hobby {
   interests String
   posts Post[]
   api String @default("")
+  tools String @default("")
 }
 
 model Post {

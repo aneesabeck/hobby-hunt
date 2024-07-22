@@ -12,13 +12,14 @@ import HobbyCommunity from './HobbyCommunity'
 import AlertsPage from './AlertsPage'
 import ProfilePage from './ProfilePage'
 import Cookies from 'js-cookie'
+import WebSocketService from './WebSocketService'
 
 function App() {
   let location = useLocation()
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState(Cookies.get('username'))
-  const [userId, setUserId] = useState("")
-  const [hobbyName, setHobbyName] = useState("")
+  const [userId, setUserId] = useState(null)
+  const [hobbyName, setHobbyName] = useState(null)
   const [hobbyId, setHobbyId] = useState(null)
   const [notifications, setNotifications] = useState([])
   const cookies = Cookies.get('username')
@@ -78,6 +79,9 @@ useEffect(() => {
 }, [userId])
 
 const fetchCurrentUser = async () => {
+  if (username == null) {
+    return
+  }
   fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/get-user`)
   .then(response => {
       if (!response.ok) {
@@ -97,11 +101,15 @@ const fetchCurrentUser = async () => {
 }
 
 const fetchNotifications = async (userId) => {
+  if (userId == null) {
+    return
+  }
   fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/${userId}`)
   .then(response => {
       return response.json();
   })
   .then(data => {
+     console.log(data)
       setNotifications(data)
   })
   .catch(error => {
@@ -109,6 +117,7 @@ const fetchNotifications = async (userId) => {
       console.error('error fetching notifs:', error)
   })
 }
+// console.log("notifs", notifications)
 
 
 useEffect(() => {
@@ -151,6 +160,7 @@ useEffect(() => {
             <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobbyName} hobbyId={hobbyId} fetchNotifications={fetchNotifications} notifications={notifications} setNotifications={setNotifications}/>}/>
             <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobbyName} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
       </Routes>
+      <WebSocketService userId={parseInt(userId)} fetchNotifications={fetchNotifications}/>
 
 
       </>
