@@ -709,8 +709,62 @@ app.put('/notifications/:userid/read', async (req, res) => {
     }
 })
 
-app.put('/questionaire', async (req, res) => {
-    
+app.get('/questionnaire', async (req, res) => {
+    try {
+        const questionsAndOptions = {}
+        const questions = prisma.questions.findMany()
+        questions.forEach(question => {
+            const options = prisma.questionoptions.findMany({
+                where: { questionId: question.id }
+            })
+            const questionAndOptions = {
+                question,
+                options
+            }
+            questionsAndOptions[question.id] = questionAndOptions
+        })
+        return res.json(questionsAndOptions)
+
+    } catch (error) {
+        console.error("fetch questionnaire", error)
+    }
+
+})
+
+app.post('/user-answers', async (req, res) => {
+    const { userId, questionOptionId } = req.body()
+    const userAnswers = prisma.questionuseranswers.create({
+        data: {
+            questionOptionId: parseInt(questionOptionId),
+            userId: parseInt(userId)
+        }
+    })
+    res.json(userAnswers)
+})
+
+app.get('/recommendations', async (req, res) => {
+    const userAnswers = {}
+    const { userId } = req.body()
+    const answers = prisma.questionuseranswers.findMany({
+        where: { userId: parseInt(userId) }
+    })
+    answers.forEach(answer => {
+        console.log("answer", answer.createdAt)
+        userAnswers[answer.id] = answer
+        // add if check for date
+    })
+    const hobbyWeights = {}
+    userAnswers.forEach(userAnswer => {
+        const optionWeights = prisma.optionweights.findMany({
+            where: {
+                qoId: userAnswer.questionOptionId
+            }
+        })
+        optionWeights.forEach(weight => {
+            const hobbyWeight = hobbyWeights[weight.hobbyId] ?? 0
+            hobbyWeights[weight.hobbyId] = hobbyWeight + weight.weight
+        })
+    })
 })
 
     
