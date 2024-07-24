@@ -11,6 +11,7 @@ import SetHobby from './SetHobby'
 import HobbyCommunity from './HobbyCommunity'
 import AlertsPage from './AlertsPage'
 import ProfilePage from './ProfilePage'
+import Quiz from './Quiz'
 import Cookies from 'js-cookie'
 import WebSocketService from './WebSocketService'
 
@@ -159,6 +160,7 @@ useEffect(() => {
             <Route path="/hobby-community/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobbyName} setHobbyId={setHobbyId} userId={userId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} handleNewHobby={handleNewHobby} fetchNotifications={fetchNotifications} notifications={notifications}/>}/>
             <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobbyName} hobbyId={hobbyId} fetchNotifications={fetchNotifications} notifications={notifications} setNotifications={setNotifications}/>}/>
             <Route path="/profilepage" element={<ProfilePage user={user} hobbyName={hobbyName} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
+            <Route path="/questions" element={<Quiz userId={userId}/>}/>
       </Routes>
       <WebSocketService userId={parseInt(userId)} fetchNotifications={fetchNotifications}/>
 

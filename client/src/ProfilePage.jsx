@@ -80,14 +80,14 @@ const ProfilePage = ({ user, hobbyName, hobbyId, setUsername, handleNewHobby, fe
           <option value='3'>Soccer</option>
           <option value='4'>Tourism</option>
           <option value='5' >Animation</option>
-          <option value='6' >Pottery</option>
-         <option value='7' > Crochet</option>
-          <option value='8'>Running</option>
-          <option value='9'>Video Games</option>
-         <option value='10'> Jewelry Collection</option>
-          <option value='11'>Music</option>
-          <option value='12'>Baking</option>
-          <option value='13'>Biking</option>
+          <option value='8' >Pottery</option>
+         <option value='11' > Crochet</option>
+          <option value='12'>Running</option>
+          <option value='13'>Video Games</option>
+         <option value='14'> Jewelry Collection</option>
+          <option value='15'>Music</option>
+          <option value='16'>Baking</option>
+          <option value='17'>Biking</option>
           </select>
           </label>
         {editOpen && <ModalEditProfile closeEdits={closeEdits} username={user.username} setUsername={setUsername}/>}

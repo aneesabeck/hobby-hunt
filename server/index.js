@@ -43,8 +43,6 @@ pgClient.on('notification', async (msg) => {
             data: notifications,
         })
 
-
-    
         usersToNotify.forEach(user => {
             const client = clients[user.id]
             // await prisma.notification.findMany
@@ -690,10 +688,7 @@ app.get("/:hobbyId/posts/search", async (req, res) => {
 
 app.put('/notifications/:userid/read', async (req, res) => {
     const { userid } = req.params
-    console.log(userid)
     const { timestamp } = req.body
-    console.log(timestamp)
-    console.log(new Date(timestamp))
     try {
         const updatedNotification = await prisma.notification.updateMany({
             where: { userId: parseInt(userid),
@@ -702,7 +697,6 @@ app.put('/notifications/:userid/read', async (req, res) => {
              },
             data: { read: true },
         })
-        console.log("up", updatedNotification)
         res.json(updatedNotification)
     } catch (error) {
         console.log(error)
@@ -711,19 +705,21 @@ app.put('/notifications/:userid/read', async (req, res) => {
 
 app.get('/questionnaire', async (req, res) => {
     try {
-        const questionsAndOptions = {}
-        const questions = prisma.questions.findMany()
-        questions.forEach(question => {
-            const options = prisma.questionoptions.findMany({
+        let questionsAndOptions = {}
+        const allQuestions = await prisma.questions.findMany()
+        for (const question of allQuestions) {
+            const options = await prisma.questionOptions.findMany({
                 where: { questionId: question.id }
             })
             const questionAndOptions = {
                 question,
                 options
             }
-            questionsAndOptions[question.id] = questionAndOptions
-        })
-        return res.json(questionsAndOptions)
+            questionsAndOptions[parseInt(question.id)] = questionAndOptions
+
+        }
+        // console.log(questionsAndOptions)
+        res.json(questionsAndOptions)
 
     } catch (error) {
         console.error("fetch questionnaire", error)
@@ -732,39 +728,86 @@ app.get('/questionnaire', async (req, res) => {
 })
 
 app.post('/user-answers', async (req, res) => {
-    const { userId, questionOptionId } = req.body()
-    const userAnswers = prisma.questionuseranswers.create({
-        data: {
-            questionOptionId: parseInt(questionOptionId),
-            userId: parseInt(userId)
+    try{
+        const { userId, questionOptionIds } = req.body
+        const dataCreate = []
+        for (qId in questionOptionIds) {
+            try {
+                await prisma.questionUserAnswers.deleteMany({
+                    where: { questionId: parseInt(qId), userId: parseInt(userId) }
+                })
+            } catch (error) {
+                console.log(error)
+                continue
+            }
+            dataCreate.push({questionOptionId: parseInt(questionOptionIds[qId]), userId: parseInt(userId), questionId: parseInt(qId)})
         }
-    })
-    res.json(userAnswers)
+        
+        const userAnswers = await prisma.questionUserAnswers.createMany({
+            data: dataCreate,
+            skipDuplicates: true
+        })
+        res.json(userAnswers)
+    } catch (error) {
+        console.log(error)
+    }
+    
 })
 
-app.get('/recommendations', async (req, res) => {
-    const userAnswers = {}
-    const { userId } = req.body()
-    const answers = prisma.questionuseranswers.findMany({
-        where: { userId: parseInt(userId) }
-    })
-    answers.forEach(answer => {
-        console.log("answer", answer.createdAt)
-        userAnswers[answer.id] = answer
-        // add if check for date
-    })
-    const hobbyWeights = {}
-    userAnswers.forEach(userAnswer => {
-        const optionWeights = prisma.optionweights.findMany({
-            where: {
-                qoId: userAnswer.questionOptionId
+app.get('/recommendations/:userId', async (req, res) => {
+    try {
+        const userAnswers = {}
+        const userOptions = {}
+        const recommendations = {}
+        const hobbyToId = {}
+        const { userId } = req.params
+        const answers = await prisma.questionUserAnswers.findMany({
+            where: { userId: parseInt(userId) }
+        })
+        const hobbies = await prisma.hobby.findMany()
+        for (const hobby of hobbies) {
+            // console.log("hob rec", hobby.name)
+            recommendations[hobby.name] = 0
+        }
+
+        for (const answer of answers) {
+            userAnswers[parseInt(answer.id)] = answer
+            userOptions[parseInt(answer.questionOptionId)] = answer.questionOption
+            const interestWeight = await prisma.optionInterestWeights.findUnique({
+                where: { qoId: parseInt(answer.questionOptionId) }
+            })
+            const interest = await prisma.interests.findUnique({
+                where: { id: interestWeight.interestId }
+            })
+
+            const hobbiesToAdd = await prisma.hobby.findMany({
+                where: { interestId: interest.id }
+            })
+            for (const hobby of hobbiesToAdd) {
+                const hobbyWeight = await prisma.optionHobbyWeights.findFirst({
+                    where: { hobbyId: hobby.id,
+                        qoId: parseInt(answer.questionOptionId)
+                    }
+                })
+                recommendations[hobby.name] += interestWeight.weight
+                hobbyToId[hobby.name] = hobby.id
+                if (hobbyWeight != null) {
+                    recommendations[hobby.name] += hobbyWeight.weight
+                }
+
             }
-        })
-        optionWeights.forEach(weight => {
-            const hobbyWeight = hobbyWeights[weight.hobbyId] ?? 0
-            hobbyWeights[weight.hobbyId] = hobbyWeight + weight.weight
-        })
-    })
+        }
+        const recArray = Object.entries(recommendations)
+        recArray.sort((a,b) => b[1] - a[1])
+        const topHobbies = {}
+        for (let i = 0; i < 5; i++) {
+            topHobbies[recArray[i][0]] = hobbyToId[recArray[i][0]]
+        }
+        res.json(topHobbies)
+
+    } catch (error) {
+        console.log(error)
+    }
 })
 
     

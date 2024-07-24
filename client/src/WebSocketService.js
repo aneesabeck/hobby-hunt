@@ -11,7 +11,6 @@ const WebSocketService = ({ userId, fetchNotifications }) => {
 
 
     useEffect(() => {
-        console.log("effecting")
         socketRef.current = new WebSocket('ws://localhost:8080')
         console.trace('websocket connected')
         socketRef.current.onopen = () => {
