@@ -19,9 +19,11 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
     const [sort, setSort] = useState('asc')
     const [likedPosts, setLikedPosts] = useState([])
     const [modalShow, setModalShow] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     const fetchPosts = async () => {
+        setLoading(true)
         if (!hobbyId) {
             return
         }
@@ -37,6 +39,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
             } else if (sort === 'alpha'){
                 setPosts(data.sort((a, b) => a.caption.localeCompare(b.caption)))
             }
+            setLoading(false)
         })
         .catch(error => {
             console.error(error)
@@ -64,6 +67,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
     }
 
     const fetchEvents = async () => {
+        setLoading(true)
         fetch(`${currentHobbyRef.current.api}&saved_location.location_id=WrVOU8VnzjdXuc23w8LNhw`, {
             method: 'GET',
             headers: {
@@ -76,6 +80,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
             })
             .then(data => {
               setEvents(data.results)
+              setLoading(false)
             })
             .catch((error) => {
                 console.error("Error:", error)
@@ -178,26 +183,27 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
         {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
         <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobbyId}/>
         <div className='text-center'>
-        <h1 style={{margin: '30px'}}>{hobbyName} Community</h1>
+            <h1 style={{margin: '30px'}}>{hobbyName} Community</h1>
         </div>
         <Container>
             <Row>
             <Col xs={12} md={8} style={{justifyContent:'center', marginRight:'-90px'}}>
-            <div className='hobby-posts' style={{display:'flex', flexDirection: 'column', alignItems:'center'}}>
-          <SearchBar fetchPosts={fetchPosts} setPosts={setPosts} hobbyId={hobbyId} unreadNotifs={unreadNotifs}/>
-                <div className='text-center' style={{marginBottom:'20px'}}>   
-                <button onClick={() => setModalShow(true)} className='create-btn' style={{width: '250px', height: '60px', fontSize:'18px', marginBottom: '20px', color: 'white', textAlign:'center', marginRight:'20px'}}>Create new Post</button>  
-                <label >
-                <select value={sort} onChange={handleSortPosts} className='create-btn' style={{width:'250px', height:'60px'}}>
-                    <option value='asc' key='asc'>Most to Least Recent</option>
-                    <option value='desc' key='desc'>Least to Most Recent</option>
-                    <option value='alpha' key='alpha'>Alphabetically by Caption</option>
-                </select>
-          </label>
-                </div>   
-                {allPosts}
-                
-            </div>
+                <div className='hobby-posts' style={{display:'flex', flexDirection: 'column', alignItems:'center'}}>
+                    <SearchBar fetchPosts={fetchPosts} setPosts={setPosts} hobbyId={hobbyId} unreadNotifs={unreadNotifs}/>
+                    <div className='text-center' style={{marginBottom:'20px'}}>   
+                    <button onClick={() => setModalShow(true)} className='create-btn' style={{width: '250px', height: '60px', fontSize:'18px', marginBottom: '20px', color: 'white', textAlign:'center', marginRight:'20px'}}>Create new Post</button>  
+                    <label>
+                        <select value={sort} onChange={handleSortPosts} className='create-btn' style={{width:'250px', height:'60px'}}>
+                            <option value='asc' key='asc'>Most to Least Recent</option>
+                            <option value='desc' key='desc'>Least to Most Recent</option>
+                            <option value='alpha' key='alpha'>Alphabetically by Caption</option>
+                        </select>
+                    </label>
+                    </div> 
+                    {loading && <p>Loading...</p>}  
+                    {allPosts}
+                    
+                </div>
             </Col>
             <Col xs={6} md={4}>
             <div className='events' style={{marginTop:'50px'}}>
