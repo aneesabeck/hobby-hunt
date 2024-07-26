@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import "./ModalPost.css";
+import React, { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
-const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
+const ModalPost = ({ fetchPosts, username, hobby, show, onHide }) => {
     const [formData, setFormData] = useState({
         imgUrl: '',
         caption: '',
@@ -20,7 +21,7 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
 
       const handleSubmit = (e) => {
         e.preventDefault()
-        closeModal()
+        onHide(true)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobby}/${username}/new-post`, {
           method: 'POST',
           headers: {
@@ -46,9 +47,6 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
         })
       }
 
-      function handleCloseModal() {
-        closeModal()
-    }
 
     const handleImgChange = (e) => {
       const file = e.target.files[0]
@@ -65,28 +63,36 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby }) => {
 
     return (
         <>
-      <div className="centered">
-                <div className="modal">
-                    <div className='modal-content'>
-                    <form className="board-form" onSubmit={handleSubmit}>
-                        <label>
-                            Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange} required/>
-                        </label>
-                        <label>Image: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
+        <Modal show={show} onHide={onHide}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{backgroundColor:'#4e9c90'}}
+          >
+       <Modal.Header closeButton className='text-center'>
+          <Modal.Title id="contained-modal-title-vcenter" className='text-center'>
+            <h2>Create a new Post</h2>
+          </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <form onSubmit={handleSubmit}>
 
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>
-                    </div>
-                    <button className="closeBtn" onClick={handleCloseModal}>
-                        Close
-                    </button>
-                    
-
-                </div>
+      <Form className="form-signin">
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Control  size="lg" type="text" placeholder="Add a caption" name="caption" value={formData.caption} onChange={handleChange} required/>
+      </Form.Group>
+      <Form.Group controlId="formFile" className="mb-4">
+                <Form.Label>Add an image</Form.Label>
+                <Form.Control type="file"  onChange={handleImgChange}/>
+            </Form.Group>
+      </Form>
+      <div className='text-center'>
+      {formData && <button type="submit" className='settings-btn' style={{width: '100px', height: '50px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>}
       </div>
+
+      </form>
+      </Modal.Body>
+      </Modal>   
         
         </>
     )

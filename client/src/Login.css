@@ -1,14 +1,4 @@
 
-.user-pass input {
-    width: 1060px;
-    margin-bottom: 20px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
 
 .back-logo {
   font-size: 50px;
@@ -18,35 +8,43 @@
 }
 
 .back-logo:hover {
-  color: blue;
+  color: #4e9c90;
 }
 
-.login-header {
-  display: flex;
-  justify-content: space-between;
-  width: 55%;
-  /* border: 2px red solid; */
-}
 
-.login-title {
-  font-size: 90px;
-}
-
-.username-input {
-  display: flex;
-  font-size: 30px;
+button.log-btn:hover{
+  transition: all 0.2s ease-in;
+  box-shadow: 5px 5px 20px lightgray;
 
 }
 
-.password-input {
-  display: flex;
-  font-size: 30px;
-}
 
-.username {
-  margin-right: 50px;
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
 }
-
-/* .login-btns {
-  display: flex;
-} */
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

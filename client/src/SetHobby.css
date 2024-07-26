@@ -1,8 +1,5 @@
 .hobby-btn h2{
-    /* margin: 0.75em; */
     padding: 1.35em 1.1em;
-    width: 15em;
-    /* background: #fffce1; */
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 800;
@@ -11,6 +8,7 @@
     border-bottom-right-radius: 20px 50px;
     border-bottom-left-radius: 20px 50px;
     cursor: pointer;
+    font-size: 20px;
 }
 
 .hobby-btn {
@@ -18,16 +16,19 @@
     border-top-right-radius: 20px 50px;
     border-bottom-right-radius: 20px 50px;
     border-bottom-left-radius: 20px 50px;
+    margin-bottom: 20px;
 }
 
 .hobbies-select {
-    font-size: 1em;
-    max-width: 1200px;
-    margin: 2em auto 3em;
+    font-size: 2px;
+    margin: 3em auto 4em;
     padding: 0 10em;
+    width: 500px;
     
 }
 
 .hobby-btn h2:hover {
-    color: #c94e50;
+    color: #f9faed;
+    box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #4e9c90;
+    transition: all 0.2s ease-in;
 }

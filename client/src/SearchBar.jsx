@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import './SearchBar.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
 
-function SearchBar({ fetchPosts, setPosts, hobbyId }) {
+function SearchBar({ fetchPosts, setPosts, hobbyId, unreadNotifs }) {
     const [inputText, setText] = useState("")
     const handleInput = (event) => {
         var input = event.target.value.toLowerCase();
@@ -36,12 +39,15 @@ function SearchBar({ fetchPosts, setPosts, hobbyId }) {
         }
        
     }
+    const navigate = useNavigate()
 
 
     return (
-        <form className="search-bar">
+        <form className="search-bar" style={{width:'700px'}}>
             <input className="search-input" type="text" value={inputText} onChange={handleInput} placeholder="Search for posts" input={inputText}/>
             <button className="search-button" type="submit" onClick={handleSubmit}>Search</button>
+            <button onClick={() => {navigate("/alerts")}} style={{backgroundColor:'white', width: '90px'}}> <FontAwesomeIcon icon={faBell} className='icon-btn' style={{ fontSize: '25px', marginRight:'5px', color: '#4e9c90'}}/> {unreadNotifs.length}</button>
+    
         </form>
     )
 }

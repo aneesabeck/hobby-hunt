@@ -20,19 +20,13 @@ const wss = new WebSocket.Server({ port: 8080 }, () => {
 app.use(express.json());
 app.use(cors());
 job.start()
-
 const clients = {}
-
-// NOTIFICATONS
-
-
 pgClient.connect()
 
 pgClient.query('LISTEN new_user')
 pgClient.query('LISTEN new_post')
 
 pgClient.on('notification', async (msg) => {
-    console.log('received notifictiion:')
     const payload = JSON.parse(msg.payload)
     const data = {
         type: msg.channel,
@@ -45,7 +39,6 @@ pgClient.on('notification', async (msg) => {
 
         usersToNotify.forEach(user => {
             const client = clients[user.id]
-            // await prisma.notification.findMany
             if (client && client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(data))
             }
@@ -98,7 +91,6 @@ wss.on('connection', (ws) => {
             }
         })
     })
-    console.log('Client connected')
 })
 
 // NOTIFICATONS
@@ -115,31 +107,6 @@ app.get('/notifications/:userId', async (req,res) => {
         where: { userId: parseInt(userId) },
         orderBy: { createdAt: 'desc'}
     })
-    // console.log(notifications)
-    // const readNotifs = await prisma.notification.findMany({
-    //     where: { userId: parseInt(userId),
-    //             createdAt: { gt: new Date(timestamp) },
-    //             read: true,
-    //      },
-    //     orderBy: { createdAt: 'desc'}
-    // })
-    // const unreadNotifs = await prisma.notification.findMany({
-    //     where: { userId: parseInt(userId),
-    //             createdAt: { lt: new Date(timestamp) },
-    //             read: false,
-    //      },
-    //     orderBy: { createdAt: 'desc'}
-    // })
-    // const allNotifs = {"read": [], "unread": []}
-    // for (let notif of notifications) {
-    //     if (notif.read) {
-    //         allNotifs.read.push(notif)
-    //     } else {
-    //         allNotifs.unread.push(notif)
-    //     }
-       
-    // }
-    // console.log("notifications")
     res.json(notifications)
 })
 
@@ -152,7 +119,6 @@ app.post("/create", async (req, res) => {
             return res.status(500)
         }
         try {
-            // Store hash in your password DB.
             const createdUser = await prisma.user.create({
                 data : { 
                     username: user,
@@ -163,7 +129,7 @@ app.post("/create", async (req, res) => {
             });
             res.status(200).json(createdUser);
         } catch (e) {
-            res.status(500).json({"error": e.message});
+            console.error(e);
         }
     });
 })
@@ -198,7 +164,7 @@ app.post("/:username/profile-setup", async (req, res) => {
         })
         return res.json(updatedUser.id)
     } catch (error) {
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
 })
@@ -278,7 +244,7 @@ app.get("/:username/get-hobbyId", async (req, res) => {
         }
         res.json(user.hobbyId)
     } catch (error) {
-        console.error('Error fetching hobbyId')
+        console.error(error)
         res.status(500)
     }
 })
@@ -295,7 +261,7 @@ app.get("/:hobbyId/posts", async (req, res) => {
         }
         res.json(hobby.posts)
     } catch (error) {
-        console.error('Error fetching posts')
+        console.error(error)
         res.status(500)
     }
 })
@@ -311,8 +277,7 @@ app.get("/:hobbyId/get-hobby", async (req, res) => {
         }
         res.json(hobby)
     } catch (error) {
-        console.error('Error fetching hobby')
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
 })
@@ -328,8 +293,7 @@ app.get("/hobby-community/:hobbyId", async (req, res) => {
         }
         res.json(hobby)
     } catch (error) {
-        console.error('Error fetching hobby')
-        console.log(error)
+        console.erro(error)
         res.status(500)
     }
 })
@@ -361,8 +325,7 @@ app.post("/:hobbyId/:username/new-post", async (req, res) => {
         res.json(Post)
         
     } catch (error) {
-        console.error('Error creating post')
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
     
@@ -388,8 +351,7 @@ app.put("/:postId/edit-post", async (req, res) => {
         res.json(updatedPost)
         
     } catch (error) {
-        console.error('Error editing post')
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
     
@@ -417,8 +379,7 @@ app.put("/:username/edit-profile", async (req, res) => {
         })
         res.json(updatedUser)
     } catch (error) {
-        console.error('Error editing profile')
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
     
@@ -448,8 +409,7 @@ app.put("/:currentUser/edit-user", async (req, res) => {
         }
         
     } catch (error) {
-        console.error('Error editing username')
-        console.log(error)
+        console.error(error)
         res.status(500)
     }
     
@@ -547,7 +507,7 @@ app.delete('/:username/delete/:postid', async (req, res) => {
         res.json(postToDelete)
     } catch (error) {
         res.status(404)
-        console.log(error)
+        console.error(error)
     }
 })
 
@@ -597,12 +557,11 @@ app.post('/posts/:username/:id/like', async (req, res) => {
         })
         res.json({likedPosts: updatedUser.likedPosts, ...updatedPost})
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 })
 
 app.post('/posts/:username/:id/dislike', async (req, res) => {
-    console.log("dislike")
     const { username, id } = req.params
     try {
         const updatedPost = await prisma.post.update({
@@ -629,7 +588,7 @@ app.post('/posts/:username/:id/dislike', async (req, res) => {
         })
         res.json({likedPosts: updatedUser.likedPosts, ...updatedPost})
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 })
 
@@ -664,7 +623,7 @@ app.post('/:postid/:username/comments', async (req, res) => {
         })
         res.json(updatedPost)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 })
 
@@ -681,7 +640,7 @@ app.get("/:hobbyId/posts/search", async (req, res) => {
         })
         res.json(posts)
     } catch (error) {
-        console.log(error)
+        console.error(error)
         res.status(500).send('server error')
     }
 })
@@ -699,7 +658,7 @@ app.put('/notifications/:userid/read', async (req, res) => {
         })
         res.json(updatedNotification)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 })
 
@@ -718,11 +677,10 @@ app.get('/questionnaire', async (req, res) => {
             questionsAndOptions[parseInt(question.id)] = questionAndOptions
 
         }
-        // console.log(questionsAndOptions)
         res.json(questionsAndOptions)
 
     } catch (error) {
-        console.error("fetch questionnaire", error)
+        console.error(error)
     }
 
 })
@@ -737,7 +695,7 @@ app.post('/user-answers', async (req, res) => {
                     where: { questionId: parseInt(qId), userId: parseInt(userId) }
                 })
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 continue
             }
             dataCreate.push({questionOptionId: parseInt(questionOptionIds[qId]), userId: parseInt(userId), questionId: parseInt(qId)})
@@ -749,7 +707,7 @@ app.post('/user-answers', async (req, res) => {
         })
         res.json(userAnswers)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
     
 })
@@ -766,7 +724,6 @@ app.get('/recommendations/:userId', async (req, res) => {
         })
         const hobbies = await prisma.hobby.findMany()
         for (const hobby of hobbies) {
-            // console.log("hob rec", hobby.name)
             recommendations[hobby.name] = 0
         }
 
@@ -806,8 +763,20 @@ app.get('/recommendations/:userId', async (req, res) => {
         res.json(topHobbies)
 
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
+})
+
+app.get('/:hobbyId/get-tools', async (req, res) => {
+    const { hobbyId } = req.params
+    const hobby = await prisma.hobby.findUnique({
+        where: { id: parseInt(hobbyId) },
+        select: { tools: true },
+    })
+    if (!hobby) {
+        return res.status(404)
+    }
+    res.json(hobby.tools)
 })
 
     

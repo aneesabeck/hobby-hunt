@@ -5,3 +5,11 @@
 .post-author {
     cursor: pointer;
 }
+
+  .icon-btn:hover {
+    cursor: pointer;
+    color: black;
+  }
+  .display-user:hover {
+    cursor: pointer;
+  }
