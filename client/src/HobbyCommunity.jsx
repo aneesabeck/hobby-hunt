@@ -16,7 +16,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
     const [hobbyName, setHobbyName] = useState("")
     const currentHobbyRef = useRef(currentHobby)
     const [events, setEvents] = useState([])
-    const [isOpen, setIsOpen] = useState(false)
     const [sort, setSort] = useState('asc')
     const [likedPosts, setLikedPosts] = useState([])
     const [modalShow, setModalShow] = useState(false);

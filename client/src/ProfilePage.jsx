@@ -9,7 +9,7 @@ const ProfilePage = ({ user, username, hobbyName, hobbyId, setUsername, handleNe
     const intHobbyId = parseInt(hobbyId)
     const [bgColor, setBgColor] = useState(user?.backgroundColor)
     const [modalShow, setModalShow] = useState(false);
-    const [settings, setSettings] = useState(null)
+    const [settings, setSettings] = useState(false)
 
     function changeTheHobby(e) {
       var hobbyId = e.target.value;
@@ -104,7 +104,7 @@ const ProfilePage = ({ user, username, hobbyName, hobbyId, setUsername, handleNe
         
         </div>
         <br></br><br></br><br></br>
-        <ModalEditProfile username={username} setUsername={setUsername} show={modalShow} onHide={() => {setModalShow(false), setSettings(null)}} settings={settings} setSettings={setSettings}/>
+        <ModalEditProfile username={username} setUsername={setUsername} show={modalShow} onHide={() => {setModalShow(false), setSettings(false)}} settings={settings} setSettings={setSettings}/>
         </div>
         <footer className="container">
             <hr></hr>

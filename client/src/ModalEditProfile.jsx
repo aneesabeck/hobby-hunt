@@ -4,9 +4,9 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 const ModalEditProfile = ({ username, setUsername, show, onHide, settings, setSettings }) => {
-    const [profile, setProfile] = useState(null)
-    const [changeUser, setChangeUser] = useState(null)
-    const [changePassword, setChangePassword] = useState(null)
+    const [profile, setProfile] = useState(false)
+    const [changeUser, setChangeUser] = useState(false)
+    const [changePassword, setChangePassword] = useState(false)
     const [findError, setFindError] = useState(null)
     const [formData, setFormData] = useState({
         firstname: '',
@@ -128,24 +128,24 @@ const ModalEditProfile = ({ username, setUsername, show, onHide, settings, setSe
   }
 
   const handleEditProfile = () => {
-    setSettings("Success")
-    setProfile("True")
-    setChangeUser(null)
-    setChangePassword(null)
+    setSettings(true)
+    setProfile(true)
+    setChangeUser(false)
+    setChangePassword(false)
   }
 
   const handleEditUser = () => {
-    setSettings("Success")
-    setChangeUser("True")
-    setProfile(null)
-    setChangePassword(null)
+    setSettings(true)
+    setChangeUser(true)
+    setProfile(false)
+    setChangePassword(false)
   }
 
   const handleEditPassword = () => {
-    setSettings("Success")
-    setChangePassword("True")
-    setProfile(null)
-    setChangeUser(null)
+    setSettings(true)
+    setChangePassword(true)
+    setProfile(false)
+    setChangeUser(false)
   }
 
  
