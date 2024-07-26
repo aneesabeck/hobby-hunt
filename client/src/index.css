@@ -45,9 +45,6 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-/* button:hover {
-  box-shadow: '20px 20px 20px #4e9c90';
-} */
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

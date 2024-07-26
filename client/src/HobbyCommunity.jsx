@@ -1,19 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import './HobbyCommunity.css'
 import PostCard from './PostCard'
 import EventCard from './EventCard'
 import ModalPost from './ModalPost'
 import Sidebar from './Sidebar'
 import SearchBar from './SearchBar'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell } from '@fortawesome/free-solid-svg-icons'
-import WebSocketService from './WebSocketService'
-import Cookies from 'js-cookie'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Dropdown from 'react-bootstrap/Dropdown';
 
 
 function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, hobbyId, notifications }) {

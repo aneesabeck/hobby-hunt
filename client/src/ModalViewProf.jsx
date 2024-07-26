@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import "./ModalEditPost.css";
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
 
 const ModalViewProf = ({ userArray, show, onHide }) => {
-
-
     return (
         <>
         <Modal show={show} onHide={onHide}

@@ -44,9 +44,6 @@ h1:hover {
   box-shadow:0 4px 10px 4px rgba(.3);
 }
 
-/* .edit-btn {
-  box-shadow: 1px 1px 6px #c5c5c5, -1px -1px 6px #ffffff;
-} */
 
 .edit-btn:hover {
   cursor: pointer;

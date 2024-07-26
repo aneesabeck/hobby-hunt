@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import "./ModalEditProfile.css";
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, settings, setSettings }) => {
+const ModalEditProfile = ({ username, setUsername, show, onHide, settings, setSettings }) => {
     const [profile, setProfile] = useState(null)
     const [changeUser, setChangeUser] = useState(null)
     const [changePassword, setChangePassword] = useState(null)
@@ -114,9 +113,7 @@ const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, set
         })
       }
 
-      function handleCloseModal() {
-        closeEdits()
-    }
+
 
     const handleImgChange = (e) => {
       const file = e.target.files[0]
@@ -176,6 +173,7 @@ const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, set
         {!settings && <button onClick={handleEditPassword} className='settings-btn' style={{width: '200px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Change Password</button>}
         {!settings && <button onClick={handleEditProfile} className='settings-btn' style={{width: '200px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Edit Profile</button>}
         </div>
+
         {profile && settings && 
         <div className="text-center mb-4">
         <form onSubmit={handleSubmit}>
@@ -195,8 +193,10 @@ const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, set
         </Form>
         <button type="submit" className='settings-btn' style={{width: '150px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>
         </form>
+        {findError && <p>{findError}</p>}
         </div>
         }
+
         {changeUser && settings && 
         <div className="text-center mb-4">
         <Form className="form-signin" onSubmit={handleUserSubmit}>
@@ -206,6 +206,7 @@ const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, set
         </Form.Group> 
         <button type="submit" className='settings-btn' style={{width: '150px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>
         </Form>
+        {findError && <p>{findError}</p>}
         </div>}
 
     {changePassword && settings && 
@@ -217,76 +218,11 @@ const ModalEditProfile = ({ closeEdits, username, setUsername, show, onHide, set
     </Form.Group> 
     <button type="submit" className='settings-btn' style={{width: '150px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>
     </Form>
+    {findError && <p>{findError}</p>}
     </div>}         
 
       </Modal.Body>
-      {/* <Modal.Footer>
-        <button onClick={onHide}>Close</button>
-      </Modal.Footer> */}
     </Modal>
-      {/* <div >
-                <div >
-                    <div >
-                        {!settings && <button onClick={handleEditUser}>Change Username</button>}
-                        {!settings && <button onClick={handleEditPassword}>Change Password</button>}
-                        {!settings && <button onClick={handleEditProfile}>Edit Profile</button>}
-                    {profile && <form className="board-form" onSubmit={handleSubmit}>
-                        <label>
-                            First Name: <input type="text" name="firstname" value={formData.firstname} onChange={handleChange}/>
-                        </label>
-                        <label>
-                            Last Name: <input type="text" name="lastname" value={formData.lastname} onChange={handleChange}/>
-                        </label>
-                        <label>
-                            Pronouns: <input type="text" name="pronouns" value={formData.pronouns} onChange={handleChange}/>
-                        </label>
-                        <label>
-                            Bio: <input type="text" name="bio" value={formData.bio} onChange={handleChange}/>
-                        </label>
-                        <label>Profile Picture: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
-
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>}
-
-                    {changeUser && <form className="board-form" onSubmit={handleUserSubmit}>
-                        <label>
-                            Confirm Current Username: <input type="text" name="currentUser" value={formData.currentUser} onChange={handleChange}/>
-                        </label>
-                        <label>
-                            Enter new username: <input type="text" name="newUser" value={formData.newUser} onChange={handleChange}/>
-                        </label>
-
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>}
-
-                    {changePassword && <form className="board-form" onSubmit={handlePassSubmit}>
-                        <label>
-                            Enter Current Password: <input type="text" name="currentPassword" value={formData.currentPassword} onChange={handleChange}/>
-                        </label>
-                        <label>
-                            Enter new password: <input type="text" name="newPassword" value={formData.newPassword} onChange={handleChange}/>
-                        </label>
-
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>}
-                
-                    </div>
-                    <button className="closeBtn" onClick={handleCloseModal}>
-                        Close
-                    </button>
-                    
-
-                </div>
-      </div> */}
         
         </>
     )

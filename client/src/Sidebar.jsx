@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import './Sidebar.css'
 import { slide as Menu } from 'react-burger-menu'
 import Cookies from 'js-cookie'

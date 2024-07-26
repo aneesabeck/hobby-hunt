@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import "./ModalEditPost.css";
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-const ModalEditPost = ({ closeEdits, postId, fetchPosts, show, onHide}) => {
+const ModalEditPost = ({ postId, fetchPosts, show, onHide}) => {
     const [formData, setFormData] = useState({
         imgUrl: '',
         caption: '',
@@ -47,9 +46,6 @@ const ModalEditPost = ({ closeEdits, postId, fetchPosts, show, onHide}) => {
         })
       }
 
-      function handleCloseModal() {
-        closeEdits()
-    }
 
     const handleImgChange = (e) => {
       const file = e.target.files[0]

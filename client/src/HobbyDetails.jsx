@@ -21,7 +21,7 @@ const HobbyDetails = ({ username, hobbyId, hobbyName}) => {
             return response.json();
         })
         .then(data => {
-            setTools(data.replace('y', 'h'))
+            setTools(data)
         })
         .catch(error => {
             console.error('error fetching tools:', error)

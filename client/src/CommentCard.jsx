@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
-// import './CommentCard.css'
+import React from 'react'
 
 function CommentCard({username, text}) {
 

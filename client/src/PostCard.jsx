@@ -15,7 +15,6 @@ import Col from 'react-bootstrap/Col';
 function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username, likes, currentUser, fetchPosts, handleDelete}) {
     const [currentLikes, setCurrentLikes] = useState(likes)
     const [liked, setLiked] = useState(false)
-    const [profOpen, setProfOpen] = useState(false)
     const [userClicked, setUserClicked] = useState(null)
     const [modalCommentShow, setModalCommentShow] = useState(false);
     const [modalEditShow, setModalEditShow] = useState(false);
@@ -94,11 +93,8 @@ function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username,
 
   useEffect(() => {
     fetchClickedUser()
-}, [profOpen])
+}, [modalProfShow])
 
-    function handleClickUser() {
-      setProfOpen(true)
-    }
 
 
 
@@ -123,7 +119,7 @@ function PostCard({likedPosts, setLikedPosts, postId, imgUrl, caption, username,
             {username === currentUser && <FontAwesomeIcon icon={faPenToSquare} onClick={() => setModalEditShow(true)} className='icon-btn' style={{color: 'white', fontSize: '25px'}}/>}
         </Card.Body>
       <ModalComment postId={postId} username={currentUser} show={modalCommentShow} onHide={() => setModalCommentShow(false)} />
-      <ModalEditPost postId={postId} username={currentUser} fetchPosts={fetchPosts} show={modalEditShow} onHide={() => setModalEditShow(false)}/>
+      <ModalEditPost postId={postId} fetchPosts={fetchPosts} show={modalEditShow} onHide={() => setModalEditShow(false)}/>
       <ModalViewProf userArray={userClicked} show={modalProfShow} onHide={() => setModalProfShow(false)}/>
       </Card>
     )

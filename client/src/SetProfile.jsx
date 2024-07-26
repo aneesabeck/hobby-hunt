@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import './SetProfile.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Form from 'react-bootstrap/Form';
 import { faWorm } from '@fortawesome/free-solid-svg-icons'

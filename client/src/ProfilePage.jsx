@@ -4,7 +4,6 @@ import ModalEditProfile from './ModalEditProfile'
 import Image from 'react-bootstrap/Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
-import Modal from 'react-bootstrap/Modal';
 
 const ProfilePage = ({ user, username, hobbyName, hobbyId, setUsername, handleNewHobby, fetchCurrentUser }) => {
     const intHobbyId = parseInt(hobbyId)
@@ -101,7 +100,7 @@ const ProfilePage = ({ user, username, hobbyName, hobbyId, setUsername, handleNe
           </label>
           <br></br>
           <FontAwesomeIcon icon={faGear} className='edit-btn' onClick={() => setModalShow(true)} style={{color: '#4e9c90', fontSize: '50px', marginBottom: '20px'}}/>
-          {/* <button onClick={() => setModalShow(true)} className='edit-btn' style={{marginTop: '20px', marginBottom:'20px'}}>Settings</button> */}
+
           
         
         </div>

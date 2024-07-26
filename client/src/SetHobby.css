@@ -1,8 +1,5 @@
 .hobby-btn h2{
-    /* margin: 0.75em; */
     padding: 1.35em 1.1em;
-    /* width: 15em; */
-    /* background: #fffce1; */
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 800;
@@ -20,7 +17,6 @@
     border-bottom-right-radius: 20px 50px;
     border-bottom-left-radius: 20px 50px;
     margin-bottom: 20px;
-    /* width: 100px; */
 }
 
 .hobbies-select {

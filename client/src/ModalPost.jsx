@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import "./ModalPost.css";
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-const ModalPost = ({ closeModal, fetchPosts, username, hobby, show, onHide }) => {
+const ModalPost = ({ fetchPosts, username, hobby, show, onHide }) => {
     const [formData, setFormData] = useState({
         imgUrl: '',
         caption: '',
@@ -48,9 +47,6 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby, show, onHide }) =>
         })
       }
 
-      function handleCloseModal() {
-        closeModal()
-    }
 
     const handleImgChange = (e) => {
       const file = e.target.files[0]
@@ -97,28 +93,6 @@ const ModalPost = ({ closeModal, fetchPosts, username, hobby, show, onHide }) =>
       </form>
       </Modal.Body>
       </Modal>   
-      {/* <div className="centered">
-                <div className="modal">
-                    <div className='modal-content'>
-                    <form className="board-form" onSubmit={handleSubmit}>
-                        <label>
-                            Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange} required/>
-                        </label>
-                        <label>Image: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
-
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>
-                    </div>
-                    <button className="closeBtn" onClick={handleCloseModal}>
-                        Close
-                    </button>
-                    
-
-                </div>
-      </div> */}
         
         </>
     )
