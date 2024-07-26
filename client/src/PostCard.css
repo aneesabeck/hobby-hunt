@@ -5,3 +5,25 @@
 .post-author {
     cursor: pointer;
 }
+
+
+/* .like-icon {
+    font-size: 50px;
+    color: white;
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .back-logo:hover {
+    color: #4e9c90;
+  } */
+
+  .icon-btn:hover {
+    cursor: pointer;
+    color: black;
+  }
+
+  /* .icon-btn */
+  .display-user:hover {
+    cursor: pointer;
+  }

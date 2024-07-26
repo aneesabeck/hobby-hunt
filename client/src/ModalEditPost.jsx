@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import "./ModalEditPost.css";
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
-const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
+const ModalEditPost = ({ closeEdits, postId, fetchPosts, show, onHide}) => {
     const [formData, setFormData] = useState({
         imgUrl: '',
         caption: '',
@@ -19,7 +21,7 @@ const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
 
       const handleSubmit = (e) => {
         e.preventDefault()
-        closeEdits()
+        onHide(true)
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${postId}/edit-post`, {
           method: 'PUT',
           headers: {
@@ -65,29 +67,36 @@ const ModalEditPost = ({ closeEdits, postId, fetchPosts}) => {
 
     return (
         <>
-      <div className="centered">
-                <div className="modal">
-                    <div className='modal-content'>
-                    <form className="board-form" onSubmit={handleSubmit}>
-                        <label>
-                            Caption: <input type="text" name="caption" value={formData.caption} onChange={handleChange}/>
-                        </label>
-                        <label>Image: <input type='file' accept="image/*" onChange={handleImgChange}></input></label>
+         <Modal show={show} onHide={onHide}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{backgroundColor:'#4e9c90'}}
+          >
+       <Modal.Header closeButton className='text-center'>
+          <Modal.Title id="contained-modal-title-vcenter" className='text-center'>
+            <h2>Edit your post</h2>
+          </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <form onSubmit={handleSubmit}>
 
-                        <div className="form-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-
-                        </form>
-                    </div>
-                    <button className="closeBtn" onClick={handleCloseModal}>
-                        Close
-                    </button>
-                    
-
-                </div>
+      <Form className="form-signin">
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Control  size="lg" type="text" placeholder="New Caption" name="caption" value={formData.caption} onChange={handleChange}/>
+      </Form.Group>
+      <Form.Group controlId="formFile" className="mb-4">
+                <Form.Label>New image</Form.Label>
+                <Form.Control type="file"  onChange={handleImgChange}/>
+            </Form.Group>
+      </Form>
+      <div className='text-center'>
+      {formData && <button type="submit" className='settings-btn' style={{width: '100px', height: '50px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>}
       </div>
-        
+
+      </form>
+      </Modal.Body>
+      </Modal>       
         </>
     )
 

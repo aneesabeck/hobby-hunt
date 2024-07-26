@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import "./ModalEditPost.css";
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
-const ModalViewProf = ({ closeProf, username, userArray }) => {
+const ModalViewProf = ({ userArray, show, onHide }) => {
 
 
     return (
         <>
-      <div className="centered">
-                <div className="modal" style={{backgroundColor: userArray.backgroundColor}}>
-                    <div className='modal-content'>
-                    <p>{username}</p>
-                    <p>{userArray.bio}</p>
-                    <p>{userArray.pronouns}</p>
-                    <p>{userArray.firstname}</p>
-                    <p>{userArray.lastname}</p>
-
-                    </div>
-                    <button className="closeBtn" onClick={closeProf}>
-                        Close
-                    </button>
-                    
-
-                </div>
-      </div>
+        <Modal show={show} onHide={onHide}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{backgroundColor: userArray?.backgroundColor}}
+          >
+       <Modal.Header closeButton className='text-center'>
+          <Modal.Title id="contained-modal-title-vcenter" className='text-center'>
+            <h2>@{userArray?.username}'s Profile</h2>
+          </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className='text-center'>
+            <h4>{userArray?.firstname} {userArray?.lastname}</h4>
+            <h4>{userArray?.pronouns}</h4>
+            <h4>{userArray?.bio}</h4>
+        </div>
+      </Modal.Body>
+      </Modal>
         
         </>
     )

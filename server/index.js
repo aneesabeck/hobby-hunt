@@ -20,12 +20,7 @@ const wss = new WebSocket.Server({ port: 8080 }, () => {
 app.use(express.json());
 app.use(cors());
 job.start()
-
 const clients = {}
-
-// NOTIFICATONS
-
-
 pgClient.connect()
 
 pgClient.query('LISTEN new_user')
@@ -115,31 +110,6 @@ app.get('/notifications/:userId', async (req,res) => {
         where: { userId: parseInt(userId) },
         orderBy: { createdAt: 'desc'}
     })
-    // console.log(notifications)
-    // const readNotifs = await prisma.notification.findMany({
-    //     where: { userId: parseInt(userId),
-    //             createdAt: { gt: new Date(timestamp) },
-    //             read: true,
-    //      },
-    //     orderBy: { createdAt: 'desc'}
-    // })
-    // const unreadNotifs = await prisma.notification.findMany({
-    //     where: { userId: parseInt(userId),
-    //             createdAt: { lt: new Date(timestamp) },
-    //             read: false,
-    //      },
-    //     orderBy: { createdAt: 'desc'}
-    // })
-    // const allNotifs = {"read": [], "unread": []}
-    // for (let notif of notifications) {
-    //     if (notif.read) {
-    //         allNotifs.read.push(notif)
-    //     } else {
-    //         allNotifs.unread.push(notif)
-    //     }
-       
-    // }
-    // console.log("notifications")
     res.json(notifications)
 })
 
@@ -152,7 +122,6 @@ app.post("/create", async (req, res) => {
             return res.status(500)
         }
         try {
-            // Store hash in your password DB.
             const createdUser = await prisma.user.create({
                 data : { 
                     username: user,
@@ -163,7 +132,7 @@ app.post("/create", async (req, res) => {
             });
             res.status(200).json(createdUser);
         } catch (e) {
-            res.status(500).json({"error": e.message});
+            console.error(e);
         }
     });
 })
@@ -808,6 +777,18 @@ app.get('/recommendations/:userId', async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+})
+
+app.get('/:hobbyId/get-tools', async (req, res) => {
+    const { hobbyId } = req.params
+    const hobby = await prisma.hobby.findUnique({
+        where: { id: parseInt(hobbyId) },
+        select: { tools: true },
+    })
+    if (!hobby) {
+        return res.status(404)
+    }
+    res.json(hobby.tools)
 })
 
     

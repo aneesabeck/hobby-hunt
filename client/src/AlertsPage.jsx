@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar'
-import WebSocketService from './WebSocketService'
-import Cookies from 'js-cookie'
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 
 const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notifications, setNotifications }) => {
     const intHobbyId = parseInt(hobbyId)
     const [filter, setFilter] = useState("all")
-   
-    
-    
 
     useEffect(() => {
         fetchNotifications(userId)
@@ -32,10 +29,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
           },
           body: JSON.stringify({ timestamp })
         })
-        // .then(response => {
-        //   console.log(response)
-        //   return response.json()
-        // })
         .catch(error => {
           console.error('error marking read:', error)
         })
@@ -72,9 +65,6 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
                 "Content-Type": "application/json",
               },
             })
-            .then(response => {
-  
-            })
             .then(data => {
                 setNotifications(notifications.filter((notif) => notif.id !== notifId))
             })
@@ -82,38 +72,20 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
               console.error('error deleting notif:', error)
             })
     }
-
-    // const sortedNotifs = notifications
-
-    // function sortNotifs(type) {
-    //     if (notifications == null) {
-    //       return
-    //     }
-    //     console.log("sort notifications", notifications)
-    //     if (type === "unread") {
-    //       const newNotifs = notifications.filter(notif => (!notif.read))
-    //       setSortedNotifs(newNotifs)
-    //       // setNotifications(newNotifs);
-    //     } else if (type === "read") {
-    //       const newNotifs = notifications.filter(notif => (notif.read))
-    //       setSortedNotifs(newNotifs)
-    //       // setNotifications(newNotifs)
-    //     } else if (type === "all") {
-    //       setSortedNotifs(notifications)
-    //       // setNotifications(notifications)
-    //     }
-    // }
-    // console.log("sorted", sortedNotifs)
     
 
     return (
+      <>
+        <div className='text-center'>
+        <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={intHobbyId} style={{zIndex: 1}}/>
         <div>
-        <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={intHobbyId}/>
-        <h2>Alerts</h2>
-        <div>
-          <button onClick={() => setFilter("unread")}>New Alerts</button>
-          <button onClick={() => setFilter("read")}>Read Alerts</button>
-          <button onClick={() => setFilter("all")}>All Alerts</button>
+        <h1 style={{marginTop:'60px', marginBottom:'20px'}}>Alerts</h1>
+          <div>
+          <button onClick={() => setFilter("unread")} className='alert-btn' style={{width: '190px', height: '60px', fontSize:'20px', marginRight:'10px', border: '2px solid #4e9c90', color: '#4e9c90'}}>New Alerts</button>
+          <button onClick={() => setFilter("read")} className='alert-btn' style={{width: '190px', height: '60px', fontSize:'20px', marginRight:'10px', border: '2px solid #4e9c90', color: '#4e9c90'}}>Read Alerts</button>
+          <button onClick={() => setFilter("all")} className='alert-btn' style={{width: '190px', height: '60px', fontSize:'20px', marginRight:'10px', border: '2px solid #4e9c90', color: '#4e9c90'}}>All Alerts</button>
+          </div>
+          <ToastContainer position='middle-center' style={{marginTop:'20px', marginBottom:'20px', zIndex: 0}}>
             {notifications.filter((notif) => 
               {if (filter === "unread") {
                   return (!notif.read)
@@ -123,21 +95,31 @@ const AlertsPage = ({ userId, hobbyName, hobbyId, fetchNotifications, notificati
                   return (true)
              }
             }).map(notification => (
-                <div key={notification.id} >
-                    {notification.message}
-                    {notification.read ? (
-                      <p>read </p>
+              <Toast className="d-inline-block m-1" style={{backgroundColor:'#4e9c90'}} onClose={() => handleDelete(notification.id)}>
+                    <Toast.Header>
+                    <strong className="me-auto">{notification.read ? (
+                      <p></p>
                     ) : (
-                      <p>not read</p>
-                    )}
-                    <button onClick={() => handleDelete(notification.id)}>Delete</button>
-                </div>
+                      <p>New Alert</p>
+                    )}</strong>
+                    </Toast.Header>
+                    <Toast.Body>
+                    <h4 style={{color: 'white'}}>{notification.message}</h4>
+                </Toast.Body>
+              </Toast>
             ))}
-            {(notifications.length !== 0) && (<button onClick={() => handleClear(userId)}>Clear notifications</button>)}
+            </ToastContainer>
+            {(notifications.length !== 0) && (<button onClick={() => handleClear(userId)} className='alert-btn' style={{width: '250px', height: '60px', fontSize:'20px', marginRight:'10px', marginTop:'20px', border: '2px solid #4e9c90', color: '#4e9c90'}}>Clear notifications</button>)}
             {(notifications.length === 0) && (<h3>No recent notifications</h3>)}
 
         </div>
         </div>
+        <footer className="container" style={{marginTop:'700px'}}>
+        <hr></hr>
+        <p className="float-right"><a href="#">Back to top</a></p>
+        <p style={{paddingBottom:'100px'}}>&copy; 2024 Hobby Hunt, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </footer>
+    </>
     )
 
 }

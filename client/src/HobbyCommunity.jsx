@@ -1,16 +1,22 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { Link, useParams, Navigate, redirect, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import './HobbyCommunity.css'
 import PostCard from './PostCard'
 import EventCard from './EventCard'
 import ModalPost from './ModalPost'
 import Sidebar from './Sidebar'
 import SearchBar from './SearchBar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
 import WebSocketService from './WebSocketService'
 import Cookies from 'js-cookie'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
-function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUserId, hobbyId, handleNewHobby, fetchNotifications, notifications }) {
+function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, hobbyId, notifications }) {
     const [posts, setPosts] = useState([])
     const [currentHobby, setCurrentHobby] = useState(null)
     const [hobbyName, setHobbyName] = useState("")
@@ -19,14 +25,12 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     const [isOpen, setIsOpen] = useState(false)
     const [sort, setSort] = useState('asc')
     const [likedPosts, setLikedPosts] = useState([])
+    const [modalShow, setModalShow] = useState(false);
 
 
     const fetchPosts = async () => {
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/posts`)
         .then(response => { 
-            // if (!response.ok) {
-            //     throw new Error(`status: ${response.status}`)
-            // }
             return response.json();
         })
         .then(data => {
@@ -105,17 +109,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
     useEffect(() => {
         fetchCurrentHobby()
         fetchCurrentUser()
-        // if (userId != null) {
-        //     fetchNotifications(userId)
-        // }
     }, [hobbyId])
-
-    // useEffect(() => {
-    //     if (userId != null) {
-    //         fetchNotifications(userId)
-    //     }
-    // }, [notifications])
-
 
     useEffect(() => {
         if (currentHobby !== null) {
@@ -195,29 +189,43 @@ function HobbyCommunity({ username, setHobby, setHobbyId, userId, setUser, setUs
         <>
         {!username &&  (<Link to="/login"><button className='header-button'>Login</button> </Link> )}
         {!username &&  (<Link to="/create"><button className='header-button'>Create an account</button></Link> )}
-        <div className='community-page'>
         <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} hobbyName={hobbyName} hobbyId={hobbyId}/>
-            <div className='hobby-posts'>
-            <label>Sort Posts:
-                <select value={sort} onChange={handleSortPosts}>
+        <div className='text-center'>
+        <h1 style={{margin: '30px'}}>{hobbyName} Community</h1>
+        </div>
+        <Container>
+            <Row>
+            <Col xs={12} md={8} style={{justifyContent:'center', marginRight:'-90px'}}>
+            <div className='hobby-posts' style={{display:'flex', flexDirection: 'column', alignItems:'center'}}>
+          <SearchBar fetchPosts={fetchPosts} setPosts={setPosts} hobbyId={hobbyId} unreadNotifs={unreadNotifs}/>
+                <div className='text-center' style={{marginBottom:'20px'}}>   
+                <button onClick={() => setModalShow(true)} className='create-btn' style={{width: '250px', height: '60px', fontSize:'18px', marginBottom: '20px', color: 'white', textAlign:'center', marginRight:'20px'}}>Create new Post</button>  
+                <label >
+                <select value={sort} onChange={handleSortPosts} className='create-btn' style={{width:'250px', height:'60px'}}>
                     <option value='asc' key='asc'>Most to Least Recent</option>
                     <option value='desc' key='desc'>Least to Most Recent</option>
                     <option value='alpha' key='alpha'>Alphabetically by Caption</option>
                 </select>
           </label>
-          <SearchBar fetchPosts={fetchPosts} setPosts={setPosts} hobbyId={hobbyId}/>
-                <button onClick={openModal}>Create new Post</button>
+                </div>   
                 {allPosts}
+                
             </div>
-            <div className='events'>
+            </Col>
+            <Col xs={6} md={4}>
+            <div className='events' style={{marginTop:'50px'}}>
+                <h3 style={{marginBottom:'25px'}}>Upcoming Events</h3>
                 {allEvents}
-                <button onClick={() => {console.log("test"); navigate("/alerts")}}>Unread Alerts: {unreadNotifs.length}</button>
-                {/* {console.log("unread", unreadNotifs)}
-                {console.log("all", notifications)} */}
             </div>
-            {isOpen && <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId}/>}
-            
-        </div>
+            <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId} show={modalShow} onHide={() => setModalShow(false)}/>
+            </Col>
+            </Row>
+        </Container>
+        <footer className="container">
+        <hr></hr>
+        <p className="float-right"><a href="#">Back to top</a></p>
+        <p style={{paddingBottom:'100px'}}>&copy; 2024 Hobby Hunt, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+      </footer>
         </>
     )
 }

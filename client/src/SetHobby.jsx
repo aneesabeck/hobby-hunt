@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import "./SetHobby.css";
 import Cookies from 'js-cookie'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWorm } from '@fortawesome/free-solid-svg-icons'
 
 function SetHobby({ username, setUser, setHobbyId }) {
     const [dbHobbies, setDBHobbies] = useState([])
@@ -94,18 +96,28 @@ function SetHobby({ username, setUser, setHobbyId }) {
     }
 
     return (
+      <>
+      <br></br> <br></br> <br></br> <br></br> <br></br>
       <div className="hobbies-select">
-        {findHobbies.map((hobby) => (
-          <div onClick={(e) => handleHobbyClick(e, hobby.id)} class="hobby-btn" key={hobby.id} style={{backgroundColor: activeBtnId === hobby.id ? '#c94e50' : '#fffce1'}}>
-            <h2>{hobby.name}</h2>
+        <div className="text-center mb-4">
+                <FontAwesomeIcon icon={faWorm} className='hobby-logo' style={{color: '#4e9c90', fontSize: '70px'}}/>
+                <br></br>
+                  <h1 className="h3 mb-3 font-weight-normal" style={{fontSize: '50px'}}>Select a hobby</h1>
+                  <p style={{fontSize: '20px'}}>Note: You can change your selection later!</p>
+                  {findHobbies.map((hobby) => (
+                  <div onClick={(e) => handleHobbyClick(e, hobby.id)} className="hobby-btn" key={hobby.id} style={{backgroundColor: activeBtnId === hobby.id ? 'grey' : '#4e9c90', color: '#f9faed', boxShadow: activeBtnId === hobby.id ? '1px 1px 6px #c5c5c5, -1px -1px 6px #ffffff' : '0' }}>
+                    <h2>{hobby.name}</h2>
+                  </div>
+                ))}
+        <button onClick={handleSave} className='log-btn' style={{width: '150px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#f9faed', color: '#4e9c90', border: '1px solid #4e9c90'}}>Save Hobby</button>
           </div>
-        ))}
         <div>
         { result && <p>{result}</p>}
         </div>
-        <button onClick={handleSave}>Save Hobby</button>
+        
         {save &&  (<Navigate to={`/hobby-community/${selectedHobby}`}/>)}
       </div>
+      </>
     )
 
    

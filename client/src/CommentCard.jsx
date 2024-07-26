@@ -6,7 +6,7 @@ function CommentCard({username, text}) {
 
     return (
         <div>
-            <h3>{username}: {text}</h3>
+            <h4>@{username}: {text}</h4>
         </div>
     )
 }

@@ -1,43 +1,40 @@
 
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-
-/* hello */
-
 html {
 	overflow-y: scroll; 
+  background-color: white;
 }
 
 body {
   font-family: "Alata", sans-serif;
   font-weight: 400;
   font-style: normal;
+  background-color: white;
 }
 
 h1 {
   transition: .5s ease;
 }
 h1:hover {
-  /* background-color: red; */
   cursor: pointer;
+}
+
+.circle-nav:hover {
+  cursor: pointer;
+  box-shadow: 4px 4px 55px #4e9c90;
+  transition: .5s ease;
+}
+
+.alert-btn:hover {
+  cursor: pointer;
+  box-shadow: 4px 4px 55px #4e9c90;
+  transition: .5s ease;
+}
+
+.circle-nav {
+  box-shadow: 0px 0px 20px #4e9c90;
+  border: 1px solid #4e9c90;
+  transition: .5s ease;
 }
 
 .form {
@@ -47,7 +44,13 @@ h1:hover {
   box-shadow:0 4px 10px 4px rgba(.3);
 }
 
+/* .edit-btn {
+  box-shadow: 1px 1px 6px #c5c5c5, -1px -1px 6px #ffffff;
+} */
 
+.edit-btn:hover {
+  cursor: pointer;
+}
 
 
 label.active {
@@ -63,14 +66,16 @@ body, html, #root, .App {
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: white;
 }
+
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid darkgray;
+  border-bottom: 2px solid darkgray;
 }
 
 .header-left {
@@ -78,18 +83,84 @@ body, html, #root, .App {
 }
 
 .hobby-logo {
-  font-size: 55px;
-  margin-right: 42px;
-  margin-left: 20px
-  /* margin: 10px 30px 0px 10px; */
+  font-size: 40px;
+  margin-right: 30px;
+  margin-left: 20px;
+  margin-bottom: 0;
+  color: #f9faed;
 }
 
 .title {
-  margin: 0 100px 0 0;
-  font-size: 50px;
+  font-size: 40px;
   font-family: "Rubik Mono One", monospace;
   font-weight: 400;
   font-style: normal;
+  color: #f9faed;
+}
+
+@media screen and (max-width: 1200px) {
+  .title {
+    font-size: calc(36px + 0.5vw);
+  }
+}
+@media screen and (max-width: 992px) {
+  .title {
+    font-size: calc(32px + 0.5vw);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: calc(28px + 0.5vw);
+  }
+}
+@media screen and (max-width: 576px) {
+  .title {
+    font-size: calc(24px + 0.5vw);
+  }
+}
+@media screen and (max-width: 400px) {
+  .title {
+    font-size: calc(21px + 0.5vw);
+  }
+}
+@media screen and (max-width: 360px) {
+  .title {
+    font-size: calc(19px + 0.5vw);
+  }
+}
+
+
+@media screen and (max-width: 1200px) {
+  .hobby-logo {
+    font-size: calc(36px + 0.5vw);
+  }
+}
+@media screen and (max-width: 992px) {
+  .hobby-logo {
+    font-size: calc(32px + 0.5vw);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hobby-logo {
+    font-size: calc(28px + 0.5vw);
+  }
+}
+@media screen and (max-width: 576px) {
+  .hobby-logo {
+    font-size: calc(24px + 0.5vw);
+  }
+}
+@media screen and (max-width: 400px) {
+  .hobby-logo {
+    font-size: calc(21px + 0.5vw);
+  }
+}
+@media screen and (max-width: 360px) {
+  .hobby-logo {
+    font-size: calc(19px + 0.5vw);
+  }
 }
 
 .header-right {
@@ -98,41 +169,23 @@ body, html, #root, .App {
 }
 
 .header-button {
-  margin-left: 10px;
-  padding: 10px 20px;
-  font-size: 30px;
-  cursor: pointer;
-}
-
-.main-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100% - 60px);
-}
-
-.center-text{
-  font-size: 36px;
-}
-
-/* button stuff */
-.header-button {
   display: inline-block;
   transition: all 0.2s ease-in;
   position: relative;
   overflow: hidden;
   z-index: 1;
-  color: #090909;
+  color: #4e9c90;
   padding: 0.7em 1.7em;
   cursor: pointer;
-  font-size: 25px;
+  font-size: 15px;
   font-family: "Alata", sans-serif;
   font-weight: 400;
   font-style: normal;
-  border-radius: 0.5em;
-  background: #e8e8e8;
+  border-radius: 1em;
+  background: white;
   border: 1px solid #e8e8e8;
-  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  box-shadow: 1px 1px 6px #c5c5c5, -1px -1px 6px #ffffff;
+  margin-right: 10px;
 }
 
 .header-button:active {
@@ -163,7 +216,7 @@ body, html, #root, .App {
   top: 180%;
   width: 160%;
   height: 190%;
-  background-color: #009087;
+  background-color: #4e9c90;
   border-radius: 50%;
   display: block;
   transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
@@ -172,143 +225,105 @@ body, html, #root, .App {
 
 .header-button:hover {
   color: #ffffff;
-  border: 1px solid #009087;
+  border: 1px solid #4e9c90;
 }
 
 .bheader-button:hover:before {
   top: -35%;
-  background-color: #009087;
+  background-color: #4e9c90;
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
 
 .header-button:hover:after {
   top: -45%;
-  background-color: #009087;
+  background-color: #4e9c90;
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
-/* button stuff
 
-/* button stuff */
-
-
-input, textarea {
-  font-size:22px;
-  display:block;
-  width:100%;
-  height:100%;
-  padding:5px 10px;
-  background:none;
-  background-image:none;
-  border-radius:0;
+.navbar {
+  justify-content: space-between;
+  background-color: #4e9c90;
 }
 
-.sign-header-container {
-  display: flex;
-  margin-bottom: 20px;
-}
 
-.create-signup-box {
-  flex: 1;
-  padding: 10px;
-  border: 0.2px solid;
-  background-color: #234F1E;
-  transition: background-color 0.3s ease;
-}
-
-.create-signup-box h1 {
-  color: white;
-}
-
-.create-login-box {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid;
-  transition: background-color 0.3s ease;
-}
-
-.create-login-box h1 {
-  color: #234F1E;
-}
-
-.create-login-box:hover {
-  background-color: #234F1E;
-  cursor: pointer;
-}
-
-.create-login-box:hover h1{
-  color: white;
-}
-
-.create-login-box:hover ~ .create-signup-box{
+.carousel {
   background-color: white;
-  cursor: pointer;
+  margin-top: -16px;
 }
 
-.create-login-box:hover ~ .create-signup-box h1{
-  color: #234F1E;
+.carousel {
+  margin-bottom: 4rem;
 }
 
-/* hey */
-
-.signup-box {
-  flex: 1;
-  padding: 10px;
-  border: 0.2px solid;
-  background-color: #234F1E;
-  transition: background-color 0.3s ease;
-}
-.signup-box:hover {
-  background-color: red;
+.carousel-caption {
+  bottom: 3rem;
+  z-index: 10;
 }
 
-.signup-box h1 {
+.carousel-item {
+  height: 32rem;
+  background-color: #777;
+}
+.carousel-item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 32rem;
+}
+
+.marketing .col-lg-4 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.marketing h2 {
+  font-weight: 400;
+}
+.marketing .col-lg-4 p {
+  margin-right: .75rem;
+  margin-left: .75rem;
+}
+
+.featurette-divider {
+  margin: 5rem 0; 
+}
+
+.featurette-heading {
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -.05rem;
+}
+
+
+@media (min-width: 40em) {
+  .carousel-caption p {
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .featurette-heading {
+    font-size: 50px;
+  }
+}
+
+@media (min-width: 62em) {
+  .featurette-heading {
+    margin-top: 7rem;
+  }
+}
+
+.create-btn {
+  background-color: grey;
   color: white;
-}
-
-.login-box {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid;
-  transition: background-color 0.3s ease;
-}
-
-.login-box h1 {
-  color: #234F1E;
-}
-
-.login-box:hover {
-  background-color: #234F1E;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 
-.login-box:hover h1{
-  color: white;
+.create-btn:hover {
+  background-color: #4e9c90;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
-
-.login-box:hover ~ .signup-box{
-  background-color: white;
-  cursor: pointer;
-}
-
-.login-box:hover ~ .signup-box h1{
-  color: white;
-}
-
-.signup-box:hover ~ .login-box h1{
-  color: white;
-}
-
-.signup-box:hover ~ .login-box{
-  background-color: red;
-}
-/* 
-.signup-box:hover ~ .login-box{
-  background-color: white;
-  cursor: pointer;
-}
-
-.signup-box:hover ~ .login-box h1{
-  color: #234F1E;
-} */
-
-
