@@ -11,6 +11,7 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const saltRounds = 14;
 const app = express()
+const job = require('./cronJob')
 const PORT = 3000
 const wss = new WebSocket.Server({ port: 8080 }, () => {
     console.log("Websocket server is running on ws://localhost:8080")
@@ -18,6 +19,7 @@ const wss = new WebSocket.Server({ port: 8080 }, () => {
 
 app.use(express.json());
 app.use(cors());
+job.start()
 
 const clients = {}
 
@@ -40,9 +42,10 @@ pgClient.on('notification', async (msg) => {
         await prisma.notification.createMany({
             data: notifications,
         })
-    
+
         usersToNotify.forEach(user => {
             const client = clients[user.id]
+            // await prisma.notification.findMany
             if (client && client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(data))
             }
@@ -84,6 +87,10 @@ wss.on('connection', (ws) => {
         const { userId } = JSON.parse(message)
         clients[userId] = ws
     })
+
+    ws.on('error', (e) => {
+        console.error("error on ws", e);
+    })
     ws.on('close', () => {
         Object.keys(clients).forEach(key => {
             if (clients[key] === ws) {
@@ -108,6 +115,31 @@ app.get('/notifications/:userId', async (req,res) => {
         where: { userId: parseInt(userId) },
         orderBy: { createdAt: 'desc'}
     })
+    // console.log(notifications)
+    // const readNotifs = await prisma.notification.findMany({
+    //     where: { userId: parseInt(userId),
+    //             createdAt: { gt: new Date(timestamp) },
+    //             read: true,
+    //      },
+    //     orderBy: { createdAt: 'desc'}
+    // })
+    // const unreadNotifs = await prisma.notification.findMany({
+    //     where: { userId: parseInt(userId),
+    //             createdAt: { lt: new Date(timestamp) },
+    //             read: false,
+    //      },
+    //     orderBy: { createdAt: 'desc'}
+    // })
+    // const allNotifs = {"read": [], "unread": []}
+    // for (let notif of notifications) {
+    //     if (notif.read) {
+    //         allNotifs.read.push(notif)
+    //     } else {
+    //         allNotifs.unread.push(notif)
+    //     }
+       
+    // }
+    // console.log("notifications")
     res.json(notifications)
 })
 
@@ -656,10 +688,7 @@ app.get("/:hobbyId/posts/search", async (req, res) => {
 
 app.put('/notifications/:userid/read', async (req, res) => {
     const { userid } = req.params
-    console.log(userid)
     const { timestamp } = req.body
-    console.log(timestamp)
-    console.log(new Date(timestamp))
     try {
         const updatedNotification = await prisma.notification.updateMany({
             where: { userId: parseInt(userid),
@@ -668,8 +697,114 @@ app.put('/notifications/:userid/read', async (req, res) => {
              },
             data: { read: true },
         })
-        console.log("up", updatedNotification)
         res.json(updatedNotification)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.get('/questionnaire', async (req, res) => {
+    try {
+        let questionsAndOptions = {}
+        const allQuestions = await prisma.questions.findMany()
+        for (const question of allQuestions) {
+            const options = await prisma.questionOptions.findMany({
+                where: { questionId: question.id }
+            })
+            const questionAndOptions = {
+                question,
+                options
+            }
+            questionsAndOptions[parseInt(question.id)] = questionAndOptions
+
+        }
+        // console.log(questionsAndOptions)
+        res.json(questionsAndOptions)
+
+    } catch (error) {
+        console.error("fetch questionnaire", error)
+    }
+
+})
+
+app.post('/user-answers', async (req, res) => {
+    try{
+        const { userId, questionOptionIds } = req.body
+        const dataCreate = []
+        for (qId in questionOptionIds) {
+            try {
+                await prisma.questionUserAnswers.deleteMany({
+                    where: { questionId: parseInt(qId), userId: parseInt(userId) }
+                })
+            } catch (error) {
+                console.log(error)
+                continue
+            }
+            dataCreate.push({questionOptionId: parseInt(questionOptionIds[qId]), userId: parseInt(userId), questionId: parseInt(qId)})
+        }
+        
+        const userAnswers = await prisma.questionUserAnswers.createMany({
+            data: dataCreate,
+            skipDuplicates: true
+        })
+        res.json(userAnswers)
+    } catch (error) {
+        console.log(error)
+    }
+    
+})
+
+app.get('/recommendations/:userId', async (req, res) => {
+    try {
+        const userAnswers = {}
+        const userOptions = {}
+        const recommendations = {}
+        const hobbyToId = {}
+        const { userId } = req.params
+        const answers = await prisma.questionUserAnswers.findMany({
+            where: { userId: parseInt(userId) }
+        })
+        const hobbies = await prisma.hobby.findMany()
+        for (const hobby of hobbies) {
+            // console.log("hob rec", hobby.name)
+            recommendations[hobby.name] = 0
+        }
+
+        for (const answer of answers) {
+            userAnswers[parseInt(answer.id)] = answer
+            userOptions[parseInt(answer.questionOptionId)] = answer.questionOption
+            const interestWeight = await prisma.optionInterestWeights.findUnique({
+                where: { qoId: parseInt(answer.questionOptionId) }
+            })
+            const interest = await prisma.interests.findUnique({
+                where: { id: interestWeight.interestId }
+            })
+
+            const hobbiesToAdd = await prisma.hobby.findMany({
+                where: { interestId: interest.id }
+            })
+            for (const hobby of hobbiesToAdd) {
+                const hobbyWeight = await prisma.optionHobbyWeights.findFirst({
+                    where: { hobbyId: hobby.id,
+                        qoId: parseInt(answer.questionOptionId)
+                    }
+                })
+                recommendations[hobby.name] += interestWeight.weight
+                hobbyToId[hobby.name] = hobby.id
+                if (hobbyWeight != null) {
+                    recommendations[hobby.name] += hobbyWeight.weight
+                }
+
+            }
+        }
+        const recArray = Object.entries(recommendations)
+        recArray.sort((a,b) => b[1] - a[1])
+        const topHobbies = {}
+        for (let i = 0; i < 5; i++) {
+            topHobbies[recArray[i][0]] = hobbyToId[recArray[i][0]]
+        }
+        res.json(topHobbies)
+
     } catch (error) {
         console.log(error)
     }

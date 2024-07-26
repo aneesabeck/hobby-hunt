@@ -5,27 +5,27 @@ import { slide as Menu } from 'react-burger-menu'
 import Cookies from 'js-cookie'
 
 function Sidebar({ hobbyName, hobbyId }) {
-    const [community, setCommunity] = useState(null)
-    const [details, setDetails] = useState(null)
-    const [profile, setProfile] = useState(null)
-    const [alerts, setAlerts] = useState(null)
-    const [out, setOut] = useState(null)
+    const [community, setCommunity] = useState(false)
+    const [details, setDetails] = useState(false)
+    const [profile, setProfile] = useState(false)
+    const [alerts, setAlerts] = useState(false)
+    const [out, setOut] = useState(false)
 
     const handleCommunity = () => {
-        setCommunity("Success")
+        setCommunity(true)
       }
     const handleDetails = () => {
-        setDetails("Success")
+        setDetails(true)
     }
     const handleProfile = () => {
-        setProfile("Success")
+        setProfile(true)
       }
     const handleAlerts = () => {
-        setAlerts("Success")
+        setAlerts(true)
     }
 
     const handleSignOut = () => {
-        setOut("Success")
+        setOut(true)
         Cookies.remove("username")
     }
 
