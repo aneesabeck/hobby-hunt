@@ -26,7 +26,6 @@ function SetProfile({ username, setUserId }) {
     }
     
     const handleSubmit = (e) => {
-        console.log("submit")
         e.preventDefault()
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${username}/profile-setup`, {
             method: 'POST',

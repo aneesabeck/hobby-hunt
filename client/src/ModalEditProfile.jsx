@@ -213,8 +213,8 @@ const ModalEditProfile = ({ username, setUsername, show, onHide, settings, setSe
     <div className="text-center mb-4">
     <Form className="form-signin" onSubmit={handlePassSubmit}>
     <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Control  size="lg" type="text" placeholder="Enter your current username" onChange={handleChange} name="currentPassword" value={formData.currentPassword}/>
-        <Form.Control  size="lg" type="text" placeholder="New Username" onChange={handleChange} name="newPassword" value={formData.newPassword}/>
+        <Form.Control  size="lg" type="text" placeholder="Enter your current password" onChange={handleChange} name="currentPassword" value={formData.currentPassword}/>
+        <Form.Control  size="lg" type="text" placeholder="New Password" onChange={handleChange} name="newPassword" value={formData.newPassword}/>
     </Form.Group> 
     <button type="submit" className='settings-btn' style={{width: '150px', height: '60px', fontSize:'18px', marginRight:'10px', backgroundColor: '#4e9c90', color: 'white'}}>Submit</button>
     </Form>

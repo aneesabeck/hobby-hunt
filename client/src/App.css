@@ -324,3 +324,19 @@ body, html, #root, .App {
   background-color: #4e9c90;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
+
+.quiz-submit-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.quiz-submit-btn:hover {
+  background-color: grey;
+  color: white;
+  box-shadow: 0 4px 8px white;
+}

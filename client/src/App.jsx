@@ -117,7 +117,6 @@ const fetchNotifications = async (userId) => {
       return response.json();
   })
   .then(data => {
-     console.log(data)
       setNotifications(data)
   })
   .catch(error => {
@@ -233,7 +232,7 @@ useEffect(() => {
             <Route path="/hobby-community/:hobbyId" element={<HobbyCommunity username={username} setHobby={setHobbyName} setHobbyId={setHobbyId} setUser={setUser} setUserId={setUserId} hobbyId={hobbyId} notifications={notifications}/>}/>
             <Route path="/alerts" element={<AlertsPage userId={userId} hobbyName={hobbyName} hobbyId={hobbyId} fetchNotifications={fetchNotifications} notifications={notifications} setNotifications={setNotifications}/>}/>
             <Route path="/profilepage" element={<ProfilePage user={user} username={username} hobbyName={hobbyName} hobbyId={hobbyId} setUsername={setUsername}  handleNewHobby={handleNewHobby} fetchCurrentUser={fetchCurrentUser}/>}/>
-            <Route path="/questions" element={<Quiz userId={userId}/>}/>
+            <Route path="/hobby-quiz" element={<Quiz userId={userId} hobbyName={hobbyName} hobbyId={hobbyId} handleNewHobby={handleNewHobby}/>}/>
             <Route path="/hobby-details" element={<HobbyDetails username={username} hobbyId={hobbyId} hobbyName={hobbyName}/>}/>
       </Routes>
       <WebSocketService userId={parseInt(userId)} fetchNotifications={fetchNotifications}/>

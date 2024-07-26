@@ -20,7 +20,6 @@ function SetInterests({ username }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(selected.length)
         if (selected.length === 0) {
             setIncomplete("Don't forget to select an interest!")
             return

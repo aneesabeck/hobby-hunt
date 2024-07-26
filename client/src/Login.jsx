@@ -9,7 +9,6 @@ import './Login.css'
 import Cookies from 'js-cookie'
 
 function Login({ setUsername, setUserArray, setHobbyId }) {
-  console.log("login")
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");

@@ -34,7 +34,6 @@ const ModalComment = ({ postId, username, show, onHide }) => {
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault()
-        console.log("submit")
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${postId}/${username}/comments`, {
           method: 'POST',
           headers: {

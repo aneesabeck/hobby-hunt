@@ -9,7 +9,6 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
 const setTools = async () => {
     try{
-        // console.log("set tools")
         const hobbies = await prisma.hobby.findMany()
         for (const hobby of hobbies) {
             const prompt = `List affordable tools and resources for the hobby: ${hobby.name} along with prices and a total`
@@ -23,7 +22,7 @@ const setTools = async () => {
             })
         }
     } catch (error) {
-        console.log("fetch hobbies", error)
+        console.error(error)
     }
     
     

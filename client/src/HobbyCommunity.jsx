@@ -23,6 +23,9 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
 
 
     const fetchPosts = async () => {
+        if (!hobbyId) {
+            return
+        }
         fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/${hobbyId}/posts`)
         .then(response => { 
             return response.json();
@@ -37,8 +40,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
             }
         })
         .catch(error => {
-            console.error('error fetching posts:', error)
-            console.log(error)
+            console.error(error)
         })
     }
 
@@ -132,8 +134,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
               setPosts(posts.filter(post => post.id != postId))
             })
             .catch(error => {
-              console.error('error fetching deleting post:', error)
-              console.log(error)
+              console.error(error)
             })
     }
 
@@ -151,13 +152,6 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
     })
  
 
-    function closeModal() {
-        setIsOpen(false)
-      }
-    
-      function openModal() {
-        setIsOpen(true)
-      }
 
     const handleSortPosts = (e) => {
         setSort(e.target.value)
@@ -211,7 +205,7 @@ function HobbyCommunity({ username, setHobby, setHobbyId, setUser, setUserId, ho
                 <h3 style={{marginBottom:'25px'}}>Upcoming Events</h3>
                 {allEvents}
             </div>
-            <ModalPost closeModal={closeModal} fetchPosts={fetchPosts} username={username} hobby={hobbyId} show={modalShow} onHide={() => setModalShow(false)}/>
+            <ModalPost fetchPosts={fetchPosts} username={username} hobby={hobbyId} show={modalShow} onHide={() => setModalShow(false)}/>
             </Col>
             </Row>
         </Container>

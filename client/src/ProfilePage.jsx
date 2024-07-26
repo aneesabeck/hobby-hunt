@@ -7,7 +7,6 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 
 const ProfilePage = ({ user, username, hobbyName, hobbyId, setUsername, handleNewHobby, fetchCurrentUser }) => {
     const intHobbyId = parseInt(hobbyId)
-    const [editOpen, setEditOpen] = useState(false)
     const [bgColor, setBgColor] = useState(user?.backgroundColor)
     const [modalShow, setModalShow] = useState(false);
     const [settings, setSettings] = useState(null)
